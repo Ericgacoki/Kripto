@@ -82,8 +82,7 @@ fun GifImageLoader(
             } else {
                 add(GifDecoder.Factory())
             }
-        }
-        .build()
+        }.build()
     Image(
         painter = rememberAsyncImagePainter(
             ImageRequest.Builder(context)
