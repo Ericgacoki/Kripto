@@ -24,22 +24,15 @@ internal fun CoinDetailsDto.toCoinDetails(): CoinDetails {
         isNew = isNew,
         isActive = isActive,
         type = type,
-        tags = tagDtos.map { it.toTag() },
-        team = team.map { it.toMember() },
+        tags = tagDtos?.map { it.toTag() },
+        team = team?.map { it.toMember() },
         description = description,
         message = message,
         openSource = openSource,
         startedAt = startedAt,
         developmentStatus = developmentStatus,
-        hardwareWallet = hardwareWallet,
-        proofType = proofType,
-        orgStructure = orgStructure,
-        hashAlgorithm = hashAlgorithm,
-        links = links.toCoinDetailLink(),
-        linksExtended = linksExtendedDto.map { it.toLinksExtended() },
-        whitepaper = whitepaperDto.toWhitePaper(),
-        firstDataAt = firstDataAt,
-        lastDataAt = lastDataAt
+        links = links?.toCoinDetailLink(),
+        linksExtended = linksExtendedDto?.map { it.toLinksExtended() },
     )
 }
 
