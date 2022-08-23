@@ -1,27 +1,27 @@
 package com.ericg.kripto.presentation.screen.coin_list.viewmodel
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ericg.kripto.domain.model.Coin
 import com.ericg.kripto.domain.use_case.get_coins.GetCoinsUseCase
 import com.ericg.kripto.presentation.screen.coin_list.state.CoinListState
 import com.ericg.kripto.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
 class CoinListViewModel @Inject constructor(
     private val getCoinsUseCase: GetCoinsUseCase
-): ViewModel() {
-    private val _state = mutableStateOf(CoinListState())
-    val state: State<CoinListState> = _state
+) : ViewModel() {
+    private val _state: MutableStateFlow<CoinListState> = MutableStateFlow(CoinListState())
+    var state: StateFlow<CoinListState> = _state.asStateFlow()
+        private set
 
     init {
         getCoins()
     }
+
     /**
      * NB:
      *
@@ -47,5 +47,4 @@ class CoinListViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
-
 }
