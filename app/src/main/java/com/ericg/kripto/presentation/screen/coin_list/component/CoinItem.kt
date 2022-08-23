@@ -17,7 +17,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ericg.kripto.presentation.theme.*
+import com.ericg.kripto.presentation.theme.ColorDormant
+import com.ericg.kripto.presentation.theme.ColorDormantBg
+import com.ericg.kripto.presentation.theme.ColorPrimary
+import com.ericg.kripto.presentation.ui.sharedComposables.CoinTypeBadge
+import com.ericg.kripto.presentation.ui.sharedComposables.IsNewCoinBadge
 
 @Composable
 fun CoinItem(
@@ -54,46 +58,8 @@ fun CoinItem(
                         color = ColorPrimary,
                         fontSize = 18.sp
                     )
-
-                    if (isNew) Box(
-                        modifier = Modifier
-                            .padding(start = 12.dp)
-                            .clip(RoundedCornerShape(2.dp))
-                            .background(ColorBadgeBg)
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                            text = "NEW",
-                            color = ColorBadgeText,
-                            fontSize = 8.sp
-                        )
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .padding(start = 12.dp)
-                            .clip(RoundedCornerShape(2.dp))
-                            .background(
-                                if (type.equals("COIN", ignoreCase = true))
-                                    ColorPrimary.copy(alpha = 0.24F) else ColorBadgeBg
-                            ), contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(
-                                start = 6.dp,
-                                end = 6.dp,
-                                top = 2.dp,
-                                bottom = 1.dp
-                            ),
-                            text = if (type.equals("COIN", ignoreCase = true)) "COIN" else "TOKEN",
-                            color = if (type.equals(
-                                    "COIN",
-                                    ignoreCase = true
-                                )
-                            ) ColorPrimary else ColorBadgeText,
-                            fontSize = 8.sp
-                        )
-                    }
+                    IsNewCoinBadge(isNew)
+                    CoinTypeBadge(type = type)
                 }
 
                 Text(
@@ -141,7 +107,7 @@ private fun RankBadge(rank: Int, name: String) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                modifier = Modifier.padding(start = 6.dp, end = 6.dp,  top = 1.dp),
+                modifier = Modifier.padding(start = 6.dp, end = 6.dp, top = 1.dp),
                 text = rank.toString(),
                 fontWeight = FontWeight.Light,
                 color = ColorPrimary,
