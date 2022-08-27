@@ -5,10 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.Absolute.SpaceAround
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.ripple.LocalRippleTheme
@@ -21,18 +22,19 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.ericg.kripto.R
 import com.ericg.kripto.presentation.screen.NavGraphs
-import com.ericg.kripto.presentation.screen.destinations.*
+import com.ericg.kripto.presentation.screen.destinations.CoinLIstScreenDestination
+import com.ericg.kripto.presentation.screen.destinations.ExchangesScreenDestination
+import com.ericg.kripto.presentation.screen.destinations.PriceConversionScreenDestination
 import com.ericg.kripto.presentation.theme.ColorPrimary
 import com.ericg.kripto.presentation.theme.KriptoTheme
 import com.ericg.kripto.presentation.theme.NoRippleTheme
+import com.ericg.kripto.presentation.ui.sharedComposables.BottomNavItem
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
@@ -52,6 +54,14 @@ class MainActivity : ComponentActivity() {
                     rootDefaultAnimations = RootNavGraphDefaultAnimations.ACCOMPANIST_FADING,
                 )
 
+                val systemUiController = rememberSystemUiController()
+                SideEffect {
+                    systemUiController.setStatusBarColor(
+                        color = Color.White,
+                        darkIcons = true
+                    )
+                }
+
                 val newBackStackEntry by navController.currentBackStackEntryAsState()
                 val route = newBackStackEntry?.destination?.route
                 val scaffoldState = rememberScaffoldState()
@@ -70,40 +80,6 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(
                     scaffoldState = scaffoldState,
-                    topBar = {
-                        if (showTopAndBottomBar) Row(
-                            modifier = Modifier
-                                .background(ColorPrimary)
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(16.dp),
-                                text = provideTopBarTitle(route) ?: "",
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 28.sp,
-                                color = Color.White
-                            )
-
-                            // Don't show this icon for now
-                            if (false) Icon(
-                                modifier = Modifier
-                                    .padding(end = 16.dp)
-                                    .clickable(
-                                        interactionSource = MutableInteractionSource(),
-                                        enabled = true,
-                                        indication = null
-                                    ) {
-
-                                    },
-                                painter = painterResource(id = R.drawable.ic_round_sort),
-                                tint = Color.White,
-                                contentDescription = "Sort"
-                            )
-                        }
-
-                    },
                     bottomBar = {
                         if (showTopAndBottomBar) {
                             BottomNavigation(
@@ -120,6 +96,7 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 val navBackEntry by navController.currentBackStackEntryAsState()
                                 val currentDestination = navBackEntry?.destination
+
                                 CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
                                     bottomBarItems.forEach { item ->
                                         val selected =
@@ -156,13 +133,6 @@ class MainActivity : ComponentActivity() {
                                                                     ),
                                                                     contentDescription = "Icon"
                                                                 )
-                                                                Text(
-                                                                    modifier = Modifier.padding(
-                                                                        top = 2.dp,
-                                                                        end = 4.dp
-                                                                    ),
-                                                                    text = item.title
-                                                                )
                                                             }
                                                         }
                                                     } else {
@@ -181,7 +151,6 @@ class MainActivity : ComponentActivity() {
                                                             saveState = true
                                                         }
                                                     }
-
                                                     restoreState = true
                                                     launchSingleTop = true
                                                 }
@@ -192,7 +161,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 ) {
-                    val stupidPadding = it
+                    val stupidPadding = it // ignore this padding value
 
                     DestinationsNavHost(
                         navGraph = NavGraphs.root,
@@ -201,18 +170,6 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             }
-        }
-    }
-
-    private fun provideTopBarTitle(dest: String? = null): String? {
-        return when (dest) {
-            CoinLIstScreenDestination.route -> "Coins"
-            CoinDetailsScreenDestination.route -> "Details"
-            ExchangeDetailsScreenDestination.route -> "Market"
-            ExchangesScreenDestination.route -> "Markets" // rather than "Exchanges"
-            PriceConversionScreenDestination.route -> "Rates"
-            SplashScreenDestination.route -> null
-            else -> null
         }
     }
 }
