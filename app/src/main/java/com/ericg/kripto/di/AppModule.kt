@@ -2,6 +2,7 @@ package com.ericg.kripto.di
 
 import com.ericg.kripto.data.remote.ApiService
 import com.ericg.kripto.domain.repository.KriptoRepository
+import com.ericg.kripto.domain.use_case.get_coin_details.GetCoinDetailsUseCase
 import com.ericg.kripto.domain.use_case.get_coins.GetCoinsUseCase
 import com.ericg.kripto.util.Constants.BASE_URL
 import dagger.Module
@@ -45,7 +46,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesCoinsUseCase(repository: KriptoRepository): GetCoinsUseCase{
+    fun providesCoinsUseCase(repository: KriptoRepository): GetCoinsUseCase {
         return GetCoinsUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesCoinDetailsUseCase(repository: KriptoRepository): GetCoinDetailsUseCase {
+        return GetCoinDetailsUseCase(repository)
     }
 }
