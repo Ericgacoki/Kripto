@@ -16,7 +16,9 @@ import androidx.compose.ui.unit.dp
 import com.ericg.kripto.presentation.theme.ColorOrange
 
 @Composable
-fun TagItem(name: String, color: Color) {
+fun TagItem(name: String, colors: List<Color>) {
+    val color = colors.random()
+
     Box(
         modifier = Modifier.padding(2.dp)
             .border(width = .30.dp, shape = CutCornerShape(topStart = 12.dp), color = color)
@@ -34,5 +36,5 @@ fun TagItem(name: String, color: Color) {
 @Preview(uiMode = UI_MODE_NIGHT_NO)
 @Composable
 fun TagItemPrev() {
-    TagItem(name = "Kripto Currency", ColorOrange)
+    TagItem(name = "Kripto Currency", listOf(ColorOrange))
 }
