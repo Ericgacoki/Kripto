@@ -1,19 +1,19 @@
 package com.ericg.kripto.presentation.screen.coin_details.component
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,6 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ericg.kripto.R
 import com.ericg.kripto.domain.model.Tag
 import com.ericg.kripto.domain.model.TeamMember
+import com.ericg.kripto.presentation.screen.coin_details.state.BottomSheetContentState
 import com.ericg.kripto.presentation.screen.coin_details.viewmodel.CoinDetailsViewModel
 import com.ericg.kripto.presentation.theme.ColorBadgeText
 import com.ericg.kripto.presentation.theme.ColorLink
@@ -30,7 +31,10 @@ import com.ericg.kripto.presentation.ui.sharedComposables.RetryButton
 import com.ericg.kripto.util.GifImageLoader
 import com.google.accompanist.flowlayout.FlowRow
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Destination
 @Composable
 fun CoinDetailsScreen(
@@ -40,14 +44,38 @@ fun CoinDetailsScreen(
     rank: Int,
     isNew: Boolean,
     type: String,
+    navigator: DestinationsNavigator?,
     coinDetailsViewModel: CoinDetailsViewModel = hiltViewModel()
 ) {
-    Scaffold(
+    var bottomSheetContentState by remember { mutableStateOf(BottomSheetContentState()) }
+    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
+    )
+    val coroutineScope = rememberCoroutineScope()
+    BackHandler(enabled = true) {
+        coroutineScope.launch {
+            if (bottomSheetScaffoldState.bottomSheetState.isExpanded)
+                bottomSheetScaffoldState.bottomSheetState.collapse()
+            else navigator?.navigateUp()
+        }
+    }
+    val uriHandler = LocalUriHandler.current
+
+    BottomSheetScaffold(
         modifier = Modifier
             .background(Color.White)
             .fillMaxSize(),
         topBar = {
             CoinDetailsTopBar(name = name, symbol = symbol, rank = rank, type = type, isNew = isNew)
+        },
+        scaffoldState = bottomSheetScaffoldState,
+        sheetBackgroundColor = Color.Unspecified.copy(alpha = 0F),
+        sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+        sheetPeekHeight = 0.dp,
+        sheetContent = {
+            BottomSheetContent(bottomSheetContentState) {
+                uriHandler.openUri(it)
+            }
         }
     ) { it ->
         val unUsedPd = it
@@ -75,7 +103,7 @@ fun CoinDetailsScreen(
                                 .padding(bottom = 8.dp)
                                 .fillMaxWidth(),
                             fontSize = 14.sp,
-                            color = ColorPrimary.copy(alpha = .84F),
+                            color = ColorPrimary.copy(alpha = .74F),
                             fontWeight = FontWeight.Normal
                         )
                     }
@@ -96,13 +124,16 @@ fun CoinDetailsScreen(
 
                 if (tags.isNotEmpty())
                     item {
+                        val colors =
+                            listOf<Color>(ColorPrimary, ColorLink, ColorOrange, ColorBadgeText)
+
                         FlowRow(
                             modifier = Modifier.fillMaxWidth(),
                             mainAxisSpacing = 8.dp,
                             crossAxisSpacing = 8.dp
                         ) {
-                            tags.forEach {
-                                TagItem(name = it.name, color = randomColor())
+                            tags.sortedBy { it.name.length }.forEach {
+                                TagItem(name = it.name, colors = colors)
                             }
                         }
                     }
@@ -112,7 +143,7 @@ fun CoinDetailsScreen(
                     item {
                         Text(
                             modifier = Modifier
-                                .padding(top = 8.dp),
+                                .padding(top = 12.dp),
                             color = ColorPrimary,
                             text = "Members",
                             fontSize = 18.sp,
@@ -122,49 +153,41 @@ fun CoinDetailsScreen(
 
                 if (members.isNotEmpty())
                     item {
-                        Box(
-                            modifier = Modifier.heightIn(max = 200.dp)
-                        ) {
+                        Box {
                             LazyColumn(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(200.dp)
+                                    .heightIn(max = 232.dp)
                             ) {
                                 items(members) { member ->
                                     TeamMemberItem(member.name, member.position)
                                 }
                             }
 
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(20.dp)
-                                    .background(
-                                        brush = Brush.verticalGradient(
-                                            listOf(
-                                                Color.White,
-                                                Color.White.copy(alpha = 0.56F),
-                                                Color.Transparent
+                            if (members.size > 3)
+                                Spacer(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(32.dp)
+                                        .background(
+                                            brush = Brush.verticalGradient(
+                                                listOf(Color.White, Color.Transparent)
                                             )
                                         )
-                                    )
-                            )
+                                )
 
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 175.dp)
-                                    .height(25.dp)
-                                    .background(
-                                        brush = Brush.verticalGradient(
-                                            listOf(
-                                                Color.Transparent,
-                                                Color.White.copy(alpha = 0.56F),
-                                                Color.White,
+                            if (members.size > 3)
+                                Spacer(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 200.dp)
+                                        .height(32.dp)
+                                        .background(
+                                            brush = Brush.verticalGradient(
+                                                listOf(Color.Transparent, Color.White)
                                             )
                                         )
-                                    )
-                            )
+                                )
                         }
                     }
 
@@ -182,10 +205,10 @@ fun CoinDetailsScreen(
                 val links = coinDetailsState.value.coinDetails?.links
                 val validLinks = mapOf<String, List<String>?>(
                     "Website" to links?.website,
+                    "Explorer" to links?.explorer,
                     "YouTube" to links?.youtube,
                     "Facebook" to links?.facebook,
-                    "Reddit" to links?.reddit,
-                    "Explorer" to links?.explorer
+                    "Reddit" to links?.reddit
                 ).filter {
                     it.value != null && it.let { list ->
                         list.value?.isNotEmpty() ?: false
@@ -197,13 +220,16 @@ fun CoinDetailsScreen(
                         LazyRow(content = {
                             items(validLinks) { pair ->
                                 LinkItem(linksPair = pair) {
-                                    // TODO ========= Add BottomSheet
+                                    coroutineScope.launch {
+                                        bottomSheetContentState =
+                                            bottomSheetContentState.copy(links = it)
+                                        bottomSheetScaffoldState.bottomSheetState.expand()
+                                    }
                                 }
                             }
                         })
                     }
             }
-
         } else {
             RetryButton(
                 error = coinDetailsState.value.error,
@@ -213,9 +239,4 @@ fun CoinDetailsScreen(
             )
         }
     }
-}
-
-internal fun randomColor(): Color {
-    val colors = listOf<Color>(ColorPrimary, ColorLink,ColorOrange, ColorBadgeText)
-    return colors.random()
 }
