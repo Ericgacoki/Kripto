@@ -31,6 +31,7 @@ import com.ericg.kripto.presentation.theme.ColorPrimary
 fun AppTopBar(
     title: String,
     showSearchBar: Boolean,
+    initialValue: String,
     onSearchParamChange: (searchParam: String) -> Unit
 ) {
     Column(
@@ -56,7 +57,7 @@ fun AppTopBar(
                 .fillMaxWidth()
                 .height(54.dp)
         ) {
-            var searchParam: String by remember { mutableStateOf("") }
+            var searchParam: String by remember { mutableStateOf(initialValue) }
             val focusRequester = remember { FocusRequester() }
             val focusManager = LocalFocusManager.current
 
@@ -64,6 +65,7 @@ fun AppTopBar(
                 value = searchParam,
                 onValueChange = { newValue ->
                     searchParam = if (newValue.trim().isNotEmpty()) newValue else ""
+                    onSearchParamChange(newValue)
                 },
                 modifier = Modifier
                     .fillMaxSize()
@@ -97,6 +99,7 @@ fun AppTopBar(
                             IconButton(onClick = {
                                 focusManager.clearFocus()
                                 searchParam = ""
+                                onSearchParamChange(searchParam)
                             }) {
                                 Icon(
                                     imageVector = Icons.Default.Clear,
