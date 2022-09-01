@@ -20,6 +20,7 @@ fun ExchangesScreen() {
             AppTopBar(
                 title = "Exchanges",
                 showSearchBar = true,
+                initialValue = "", // TODO: Hoist this state in VM
                 onSearchParamChange = { newParam ->
                     // TODO: Initiate a search event
                 }
