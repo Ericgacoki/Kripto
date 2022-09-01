@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ericg.kripto.presentation.screen.coin_details.state.BottomSheetContentState
-import com.ericg.kripto.presentation.theme.ColorLink
+import com.ericg.kripto.presentation.theme.ColorLinkDark
 import com.ericg.kripto.presentation.theme.ColorPrimary
 
 @Composable
@@ -43,7 +43,7 @@ fun BottomSheetContent(
                         modifier = Modifier
                             .indication(
                                 interactionSource = interaction,
-                                indication = rememberRipple(color = ColorLink)
+                                indication = rememberRipple(color = ColorLinkDark)
                             )
                             .clickable(
                                 interactionSource = interaction,
@@ -57,7 +57,7 @@ fun BottomSheetContent(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         fontSize = 14.sp,
-                        color = ColorLink
+                        color = ColorLinkDark
                     )
                     if (index != bottomSheetContentState.links.lastIndex) {
                         Spacer(
