@@ -13,10 +13,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ericg.kripto.R
+import com.ericg.kripto.presentation.screen.coin_list.event.CoinListUiEvent
 import com.ericg.kripto.presentation.screen.coin_list.viewmodel.CoinListViewModel
 import com.ericg.kripto.presentation.screen.destinations.CoinDetailsScreenDestination
 import com.ericg.kripto.presentation.theme.ColorPrimary
 import com.ericg.kripto.presentation.ui.sharedComposables.AppTopBar
+import com.ericg.kripto.presentation.ui.sharedComposables.NoMatchFound
 import com.ericg.kripto.presentation.ui.sharedComposables.RetryButton
 import com.ericg.kripto.util.GifImageLoader
 import com.ramcosta.composedestinations.annotation.Destination
@@ -39,8 +41,9 @@ fun CoinLIstScreen(
             AppTopBar(
                 title = "Coins",
                 showSearchBar = true,
+                initialValue = coinListViewModel.searchParams,
                 onSearchParamChange = { newParam ->
-                    // TODO: Initiate a search event
+                    coinListViewModel.onEvent(CoinListUiEvent.SearchCoin(newParam))
                 }
             )
         }
@@ -51,7 +54,7 @@ fun CoinLIstScreen(
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 GifImageLoader(
                     modifier = Modifier.size(250.dp),
-                    resource = R.drawable.kripto_loading
+                    resource = R.raw.kripto_loading
                 )
             }
         } else if (coinListState.value.coins.isNotEmpty()) {
@@ -91,14 +94,15 @@ fun CoinLIstScreen(
                     }
                 }
             }
-        } else {
+        } else if (coinListState.value.error.isNotEmpty()) {
             RetryButton(
                 error = coinListState.value.error,
                 onRetryEvent = {
-                    // TODO: Use UI Event here
-                    coinListViewModel.getCoins()
+                    coinListViewModel.onEvent(CoinListUiEvent.GetCoins)
                 }
             )
+        } else {
+            NoMatchFound(lottie = R.raw.no_match_found)
         }
     }
 }
