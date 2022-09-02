@@ -102,7 +102,7 @@ fun CoinLIstScreen(
                 }
             )
         } else {
-            NoMatchFound(lottie = R.raw.no_match_found)
+            NoMatchFound(lottie = R.raw.no_match_found_lottie)
         }
     }
 }
