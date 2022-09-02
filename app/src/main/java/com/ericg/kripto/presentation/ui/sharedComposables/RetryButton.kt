@@ -1,6 +1,7 @@
 package com.ericg.kripto.presentation.ui.sharedComposables
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -25,9 +26,10 @@ fun RetryButton(error: String, onRetryEvent: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            Button(onClick = {
-                onRetryEvent()
-            }) {
+            Button(shape = RoundedCornerShape(100),
+                onClick = {
+                    onRetryEvent()
+                }) {
                 Text(
                     text = "RETRY",
                     color = ColorDormantBg
