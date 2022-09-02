@@ -31,7 +31,7 @@ fun BottomSheetContent(
         LazyColumn(
             Modifier
                 .fillMaxWidth()
-                .height(200.dp)
+                .height(224.dp)
                 .background(ColorPrimary)
                 .padding(top = 24.dp, start = 24.dp, end = 24.dp),
             horizontalAlignment = Alignment.Start

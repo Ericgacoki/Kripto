@@ -122,7 +122,12 @@ fun CoinDetailsScreen(
                 if (tags.isNotEmpty())
                     item {
                         val colors =
-                            listOf<Color>(ColorPrimary, ColorLinkDark, ColorOrangeDark, ColorBadgeText)
+                            listOf<Color>(
+                                ColorPrimary,
+                                ColorLinkDark,
+                                ColorOrangeDark,
+                                ColorBadgeText
+                            )
 
                         FlowRow(
                             modifier = Modifier.fillMaxWidth(),
@@ -218,10 +223,14 @@ fun CoinDetailsScreen(
                         LazyRow(content = {
                             items(validLinks) { pair ->
                                 LinkItem(linksPair = pair) {
-                                    coroutineScope.launch {
-                                        bottomSheetContentState =
-                                            bottomSheetContentState.copy(links = it)
-                                        bottomSheetScaffoldState.bottomSheetState.expand()
+                                    if (it.size > 1) {
+                                        coroutineScope.launch {
+                                            bottomSheetContentState =
+                                                bottomSheetContentState.copy(links = it)
+                                            bottomSheetScaffoldState.bottomSheetState.expand()
+                                        }
+                                    } else {
+                                        uriHandler.openUri(it[0])
                                     }
                                 }
                             }

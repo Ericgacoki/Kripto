@@ -30,7 +30,7 @@ import com.ericg.kripto.presentation.theme.ColorPrimary
 @Composable
 fun AppTopBar(
     title: String,
-    showSearchBar: Boolean,
+    showSearchBar: Boolean = false,
     initialValue: String,
     onSearchParamChange: (searchParam: String) -> Unit
 ) {

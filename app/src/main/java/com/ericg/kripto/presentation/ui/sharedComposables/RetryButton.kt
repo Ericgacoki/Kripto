@@ -31,6 +31,7 @@ fun RetryButton(error: String, onRetryEvent: () -> Unit) {
                     onRetryEvent()
                 }) {
                 Text(
+                    modifier = Modifier.padding(horizontal = 8.dp),
                     text = "RETRY",
                     color = ColorDormantBg
                 )
