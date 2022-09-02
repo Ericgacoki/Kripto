@@ -54,14 +54,17 @@ fun LottieLoader(
     @RawRes lottieFile: Int
 ) {
     val composition by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(lottieFile),
+        spec = LottieCompositionSpec.RawRes(lottieFile),
         onRetry = { failCount, exception ->
             Timber.e("Failed ${failCount}X with exception. Reason: ${exception.localizedMessage}")
             // stop retrying
             false
         }
     )
-    val progress by animateLottieCompositionAsState(composition)
+    val progress by animateLottieCompositionAsState(
+        composition,
+        iterations = LottieConstants.IterateForever
+    )
     LottieAnimation(
         composition = composition,
         progress = progress,
@@ -72,7 +75,7 @@ fun LottieLoader(
 @Composable
 fun GifImageLoader(
     modifier: Modifier = Modifier,
-    resource: Int,
+    @RawRes resource: Int,
 ) {
     val context = LocalContext.current
     val imageLoader = ImageLoader.Builder(context)
