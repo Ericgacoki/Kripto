@@ -17,7 +17,7 @@ class CoinDetailsViewModel @Inject constructor(
     var state: StateFlow<CoinDetailsState> = _state.asStateFlow()
         private set
 
-    fun getCoinDetails(coinId: String) {
+    fun onGetCoinDetailsEvent(coinId: String) {
         getCoinDetailsUseCase(coinId).onEach { result ->
             when (result) {
                 is Resource.Loading -> {

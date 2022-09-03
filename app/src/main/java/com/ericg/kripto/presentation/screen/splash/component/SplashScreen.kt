@@ -27,7 +27,7 @@ fun SplashScreen(
 
         if (animateLogo) LottieLoader(
             modifier = Modifier.size(270.dp),
-            lottieFile = R.raw.kripto_logo_anim
+            lottieFile = R.raw.kripto_logo_anim_lottie
         )
 
         LaunchedEffect(Unit) {

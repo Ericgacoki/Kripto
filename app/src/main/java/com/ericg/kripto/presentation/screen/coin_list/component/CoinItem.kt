@@ -52,7 +52,12 @@ fun CoinItem(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = name,
+                        text = if (isActive) name else {
+                            when (name.length) {
+                                in 0..12 -> name
+                                else -> name.substring(0..11) + "..."
+                            }
+                        },
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Start,
                         color = ColorPrimary,

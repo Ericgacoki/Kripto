@@ -14,7 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.ericg.kripto.presentation.theme.ColorLink
+import com.ericg.kripto.presentation.theme.ColorLinkDark
 
 @Composable
 fun LinkItem(
@@ -22,14 +22,14 @@ fun LinkItem(
     onNameClick: (List<String>) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val rippleColor = ColorLink
+    val rippleColor = ColorLinkDark
 
     Box(
         modifier = Modifier
             .padding(6.dp)
             .border(
                 width = (0.75).dp,
-                color = ColorLink,
+                color = ColorLinkDark,
                 shape = RoundedCornerShape(100)
             )
             .clip(shape = RoundedCornerShape(100))
@@ -44,7 +44,7 @@ fun LinkItem(
         Text(
             modifier = Modifier.padding(top = 6.dp, bottom = 4.dp, start = 12.dp, end = 12.dp),
             text = linksPair.first,
-            color = ColorLink
+            color = ColorLinkDark
         )
     }
 }

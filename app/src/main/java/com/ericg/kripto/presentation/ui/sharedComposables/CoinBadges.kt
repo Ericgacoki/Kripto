@@ -40,7 +40,7 @@ fun CoinTypeBadge(type: String) {
             .clip(RoundedCornerShape(2.dp))
             .background(
                 if (type.equals("COIN", ignoreCase = true))
-                    ColorPrimary.copy(alpha = 0.24F) else ColorBadgeBg
+                    ColorPrimary.copy(alpha = 0.12F) else ColorBadgeBg
             ), contentAlignment = Alignment.Center
     ) {
         Text(

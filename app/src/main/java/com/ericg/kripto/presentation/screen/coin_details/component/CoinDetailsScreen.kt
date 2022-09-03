@@ -23,10 +23,7 @@ import com.ericg.kripto.domain.model.Tag
 import com.ericg.kripto.domain.model.TeamMember
 import com.ericg.kripto.presentation.screen.coin_details.state.BottomSheetContentState
 import com.ericg.kripto.presentation.screen.coin_details.viewmodel.CoinDetailsViewModel
-import com.ericg.kripto.presentation.theme.ColorBadgeText
-import com.ericg.kripto.presentation.theme.ColorLink
-import com.ericg.kripto.presentation.theme.ColorOrange
-import com.ericg.kripto.presentation.theme.ColorPrimary
+import com.ericg.kripto.presentation.theme.*
 import com.ericg.kripto.presentation.ui.sharedComposables.RetryButton
 import com.ericg.kripto.util.GifImageLoader
 import com.google.accompanist.flowlayout.FlowRow
@@ -83,22 +80,22 @@ fun CoinDetailsScreen(
         val coinDetailsState = coinDetailsViewModel.state.collectAsState()
 
         LaunchedEffect(key1 = Unit) {
-            coinDetailsViewModel.getCoinDetails(id)
+            coinDetailsViewModel.onGetCoinDetailsEvent(id)
         }
 
         if (coinDetailsState.value.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 GifImageLoader(
                     modifier = Modifier.size(250.dp),
-                    resource = R.drawable.kripto_loading
+                    resource = R.raw.kripto_loading
                 )
             }
-        } else if (coinDetailsState.value.coinDetails?.id != null) {
+        } else if (coinDetailsState.value.coinDetails?.id.isNullOrEmpty().not()) {
             LazyColumn(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
                 item {
-                    coinDetailsState.value.coinDetails?.description?.let { desc ->
+                    coinDetailsState.value.coinDetails?.description.let { desc ->
                         Text(
-                            text = desc.ifEmpty { "No description" },
+                            text = if (desc.isNullOrEmpty()) "No description" else desc,
                             modifier = Modifier
                                 .padding(bottom = 8.dp)
                                 .fillMaxWidth(),
@@ -125,7 +122,12 @@ fun CoinDetailsScreen(
                 if (tags.isNotEmpty())
                     item {
                         val colors =
-                            listOf<Color>(ColorPrimary, ColorLink, ColorOrange, ColorBadgeText)
+                            listOf<Color>(
+                                ColorPrimary,
+                                ColorLinkDark,
+                                ColorOrangeDark,
+                                ColorBadgeText
+                            )
 
                         FlowRow(
                             modifier = Modifier.fillMaxWidth(),
@@ -191,21 +193,10 @@ fun CoinDetailsScreen(
                         }
                     }
 
-                item {
-                    Text(
-                        modifier = Modifier
-                            .padding(top = 8.dp),
-                        color = ColorPrimary,
-                        text = "Links",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-
                 val links = coinDetailsState.value.coinDetails?.links
                 val validLinks = mapOf<String, List<String>?>(
-                    "Website" to links?.website,
                     "Explorer" to links?.explorer,
+                    "Website" to links?.website,
                     "YouTube" to links?.youtube,
                     "Facebook" to links?.facebook,
                     "Reddit" to links?.reddit
@@ -215,15 +206,31 @@ fun CoinDetailsScreen(
                     }
                 }.toList()
 
-                if (links != null)
+                if (validLinks.isNotEmpty())
+                    item {
+                        Text(
+                            modifier = Modifier
+                                .padding(top = 8.dp),
+                            color = ColorPrimary,
+                            text = "Links",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+
+                if (validLinks.isNotEmpty())
                     item {
                         LazyRow(content = {
                             items(validLinks) { pair ->
                                 LinkItem(linksPair = pair) {
-                                    coroutineScope.launch {
-                                        bottomSheetContentState =
-                                            bottomSheetContentState.copy(links = it)
-                                        bottomSheetScaffoldState.bottomSheetState.expand()
+                                    if (it.size > 1) {
+                                        coroutineScope.launch {
+                                            bottomSheetContentState =
+                                                bottomSheetContentState.copy(links = it)
+                                            bottomSheetScaffoldState.bottomSheetState.expand()
+                                        }
+                                    } else {
+                                        uriHandler.openUri(it[0])
                                     }
                                 }
                             }
@@ -234,7 +241,7 @@ fun CoinDetailsScreen(
             RetryButton(
                 error = coinDetailsState.value.error,
                 onRetryEvent = {
-                    // TODO: Use UI Event here
+                    coinDetailsViewModel.onGetCoinDetailsEvent(id)
                 }
             )
         }
