@@ -18,7 +18,7 @@ import com.ericg.kripto.presentation.theme.ColorPrimary
 @Composable
 fun TeamMemberItem(name: String, position: String) {
     Row(
-        modifier = Modifier.padding(vertical = 8.dp),
+        modifier = Modifier.padding(bottom = 8.dp, top = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -53,4 +53,3 @@ fun TeamMemberItem(name: String, position: String) {
         }
     }
 }
-
