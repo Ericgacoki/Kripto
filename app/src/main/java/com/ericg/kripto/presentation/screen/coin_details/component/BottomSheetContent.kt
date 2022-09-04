@@ -31,8 +31,8 @@ fun BottomSheetContent(
         LazyColumn(
             Modifier
                 .fillMaxWidth()
-                .height(224.dp)
-                .background(ColorPrimary)
+                .height(250.dp)
+                .background(Color.White)
                 .padding(top = 24.dp, start = 24.dp, end = 24.dp),
             horizontalAlignment = Alignment.Start
         ) {
@@ -64,7 +64,14 @@ fun BottomSheetContent(
                             modifier = Modifier
                                 .height((.5).dp)
                                 .fillMaxWidth(1F)
-                                .background(color = Color.White.copy(alpha = 0.24F))
+                                .background(color = ColorPrimary.copy(alpha = 0.24F))
+                        )
+                    } else {
+                        Spacer(
+                            modifier = Modifier
+                                .height((24).dp)
+                                .fillMaxWidth(1F)
+                                .background(color = Color.White)
                         )
                     }
                 }
@@ -81,7 +88,7 @@ fun BottomSheetContent(
                     .width(36.dp)
                     .height(4.dp)
                     .clip(RoundedCornerShape(4.dp))
-                    .background(Color.White.copy(alpha = .88F))
+                    .background(Color.Gray.copy(alpha = .56F))
                     .padding(12.dp)
             )
         }
