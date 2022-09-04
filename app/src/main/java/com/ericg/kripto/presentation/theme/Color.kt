@@ -10,7 +10,7 @@ val ColorDormantBg = Color(0XFFFFECEC)
 val ColorDormant = Color(0xFF122E4E).copy(alpha = 0.56F)
 val ColorBadgeBg = Color(0XFF039800).copy(alpha = 0.12F)
 val ColorBadgeText = Color(0xFF027600)
-val ColorLinkDark = Color(0xFF6AA4FA)
+val ColorLinkDark = Color(0xFF60A0FF)
 val ColorOrangeDark = Color(0xFFFF9517)
 
 // TODO: Standardize colors -> Set opacity and names here
