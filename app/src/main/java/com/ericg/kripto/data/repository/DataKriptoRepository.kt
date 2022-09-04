@@ -16,7 +16,10 @@ class DataKriptoRepository @Inject constructor(
     override suspend fun getCoins(): Resource<List<Coin>> {
         return try {
             val coins = api.getCoins().map { it.toCoin() }
+
             Resource.Success<List<Coin>>(data = coins)
+
+            // TODO: Fetch ONLY from the DB but refill the DB if it has no Coins
 
         } catch (e: IOException) {
             Timber.e(message = "Couldn't reach server. Check your internet connection!")
