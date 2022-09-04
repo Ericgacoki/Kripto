@@ -13,20 +13,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ericg.kripto.presentation.theme.ColorLinkDark
 
 @Composable
 fun LinkItem(
     linksPair: Pair<String, List<String>?>,
-    onNameClick: (List<String>) -> Unit
+    onLinkClick: (List<String>) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val rippleColor = ColorLinkDark
 
     Box(
         modifier = Modifier
-            .padding(6.dp)
+            .padding(4.dp)
             .border(
                 width = (0.75).dp,
                 color = ColorLinkDark,
@@ -38,7 +39,7 @@ fun LinkItem(
                 indication = rememberRipple(color = rippleColor)
             )
             .clickable(interactionSource = interactionSource, indication = null) {
-                onNameClick(linksPair.second!!)
+                onLinkClick(linksPair.second!!)
             }
     ) {
         Text(
