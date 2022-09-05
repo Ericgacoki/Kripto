@@ -1,9 +1,13 @@
 package com.ericg.kripto.di
 
+import android.app.Application
+import androidx.room.Room
+import com.ericg.kripto.data.local.KriptoDatabase
 import com.ericg.kripto.data.remote.ApiService
 import com.ericg.kripto.domain.repository.KriptoRepository
 import com.ericg.kripto.domain.use_case.get_coin_details.GetCoinDetailsUseCase
 import com.ericg.kripto.domain.use_case.get_coins.GetCoinsUseCase
+import com.ericg.kripto.domain.use_case.search_coin.SearchCoinUseCase
 import com.ericg.kripto.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -52,7 +56,24 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun providesSearchCoinsUseCase(repository: KriptoRepository): SearchCoinUseCase {
+        return SearchCoinUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
     fun providesCoinDetailsUseCase(repository: KriptoRepository): GetCoinDetailsUseCase {
         return GetCoinDetailsUseCase(repository)
     }
+
+    @Provides
+    @Singleton
+    fun providesKriptoDatabase(application: Application): KriptoDatabase {
+        return Room.databaseBuilder(
+            application.applicationContext,
+            KriptoDatabase::class.java,
+            "kripto_database"
+        ).fallbackToDestructiveMigration().build()
+    }
 }
+
