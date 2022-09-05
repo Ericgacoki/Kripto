@@ -1,5 +1,6 @@
 package com.ericg.kripto.data.repository
 
+import com.ericg.kripto.data.local.KriptoDatabase
 import com.ericg.kripto.data.remote.ApiService
 import com.ericg.kripto.domain.model.*
 import com.ericg.kripto.domain.repository.KriptoRepository
@@ -8,19 +9,24 @@ import com.ericg.kripto.util.Resource
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
+import java.lang.Exception
 import javax.inject.Inject
 
 class DataKriptoRepository @Inject constructor(
-    private val api: ApiService
+    private val api: ApiService,
+    private val kriptoDB: KriptoDatabase
 ) : KriptoRepository {
     override suspend fun getCoins(): Resource<List<Coin>> {
         return try {
-            val coins = api.getCoins().map { it.toCoin() }
+            var coinsDb = kriptoDB.coinDao.getCoins().map { it.toCoin() }
 
-            Resource.Success<List<Coin>>(data = coins)
+            if (coinsDb.isEmpty()) {
+                val coinsRemote = api.getCoins()
+                coinsDb = coinsRemote.map { it.toCoin() } // Next time use a Flow to observe the DB
+                kriptoDB.coinDao.insertCoins(coinsRemote)
+            }
 
-            // TODO: Fetch ONLY from the DB but refill the DB if it has no Coins
-
+            Resource.Success<List<Coin>>(data = coinsDb)
         } catch (e: IOException) {
             Timber.e(message = "Couldn't reach server. Check your internet connection!")
             Resource.Error<List<Coin>>(message = "Couldn't reach server. Check your internet connection!")
@@ -30,6 +36,15 @@ class DataKriptoRepository @Inject constructor(
             Resource.Error<List<Coin>>(
                 message = e.localizedMessage ?: "An unexpected error occurred!"
             )
+        }
+    }
+
+    override suspend fun searchCoin(params: String): Resource<List<Coin>> {
+        return try {
+            val result = kriptoDB.coinDao.searchCoin(params).map { it.toCoin() }
+            Resource.Success<List<Coin>>(data = result)
+        } catch (e: Exception){
+            Resource.Error<List<Coin>>(message = "Fatal Database Error Occurred!")
         }
     }
 
