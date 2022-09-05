@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ericg.kripto.domain.model.Coin
 import com.ericg.kripto.domain.use_case.get_coins.GetCoinsUseCase
+import com.ericg.kripto.domain.use_case.search_coin.SearchCoinUseCase
 import com.ericg.kripto.presentation.screen.coin_list.event.CoinListUiEvent
 import com.ericg.kripto.presentation.screen.coin_list.state.CoinListState
 import com.ericg.kripto.util.Resource
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CoinListViewModel @Inject constructor(
-    private val getCoinsUseCase: GetCoinsUseCase
+    private val getCoinsUseCase: GetCoinsUseCase,
+    private val searchCoinsUseCase: SearchCoinUseCase,
 ) : ViewModel() {
     private val _state: MutableStateFlow<CoinListState> = MutableStateFlow(CoinListState())
     var state: StateFlow<CoinListState> = _state.asStateFlow()
@@ -29,16 +31,10 @@ class CoinListViewModel @Inject constructor(
 
     /**
      * NOTE:
-     *
-     *     Since the API doesn't support paging, the GetCoins Event
-     *     returns around 5K items at once which is irrelevant to display
-     *     on the UI. For this reason, this function only takes the first
-     *     500 items.
-     *
-     *     The Search Feature uses the already available FULL list of Coins.
-     *     This means that it is possible to see coins beyond the 500 rank mark
-     *     and Dormant coins which are usually appended at the end of list and
-     *     have a rank of 0.
+     *     Since the API doesn't support paging, the coins endpoint returns OVER 8000 items
+     *     at once which is irrelevant to display on the UI. For this reason,
+     *     this function only takes the first 500 items ONLY from the database.
+     *     Well, that's not my fault!
      */
 
     fun onEvent(event: CoinListUiEvent) {
@@ -66,18 +62,31 @@ class CoinListViewModel @Inject constructor(
             is CoinListUiEvent.SearchCoin -> {
                 if (event.searchParams.isNotEmpty()) {
                     searchParams = event.searchParams.trim()
-                    _state.value = _state.value.copy(isLoading = true)
 
-                    _state.value = _state.value.copy(coins = initialCoins.filter { coin ->
+                    /*_state.value = _state.value.copy(coins = initialCoins.filter { coin ->
                         (coin.name.contains(event.searchParams.trim(), ignoreCase = true)) ||
                                 (coin.rank.toString()
                                     .contains(event.searchParams.trim(), ignoreCase = true))
-                    })
+                    })*/
 
-                    _state.value = _state.value.copy(isLoading = false)
+                    searchCoinsUseCase(searchParams).onEach { result ->
+                        when (result) {
+                            is Resource.Success -> {
+                                _state.value = CoinListState(coins = result.data ?: emptyList())
+                            }
+                            is Resource.Error -> {
+                                _state.value = CoinListState(
+                                    error = result.message!!
+                                )
+                            }
+                            is Resource.Loading -> {
+                                _state.value = CoinListState(isLoading = true)
+                            }
+                        }
+                    }.launchIn(viewModelScope)
                 } else {
                     searchParams = ""
-                    _state.value = _state.value.copy(coins = initialCoins.take(500))
+                    _state.value = CoinListState(coins = initialCoins.take(500))
                 }
             }
         }
