@@ -13,7 +13,8 @@ data class ExchangeDetailsDto(
     @SerializedName("api_status")
     val apiStatus: Boolean,
     val message: Any?,
-    val linksDto: LinksDto,
+    @SerializedName("links")
+    val linksDto: LinksDto?,
     @SerializedName("markets_data_fetched")
     val marketsDataFetched: Boolean,
     @SerializedName("adjusted_rank")

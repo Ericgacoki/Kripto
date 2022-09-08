@@ -8,7 +8,7 @@ data class ExchangeDetails(
     val websiteStatus: Boolean,
     val apiStatus: Boolean,
     val message: Any?,
-    val links: Links,
+    val links: Links?,
     val marketsDataFetched: Boolean,
     val adjustedRank: Int,
     val reportedRank: Int,

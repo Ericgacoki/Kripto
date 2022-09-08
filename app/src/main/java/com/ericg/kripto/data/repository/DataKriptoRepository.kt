@@ -1,7 +1,7 @@
 package com.ericg.kripto.data.repository
 
-import com.ericg.kripto.data.local.KriptoDatabase
-import com.ericg.kripto.data.remote.ApiService
+import com.ericg.kripto.data.local.database.KriptoDatabase
+import com.ericg.kripto.data.remote.api.ApiService
 import com.ericg.kripto.domain.model.*
 import com.ericg.kripto.domain.repository.KriptoRepository
 import com.ericg.kripto.mapper.*
@@ -23,7 +23,7 @@ class DataKriptoRepository @Inject constructor(
             if (coinsDb.isEmpty()) {
                 val coinsRemote = api.getCoins()
                 coinsDb = coinsRemote.map { it.toCoin() } // Next time use a Flow to observe the DB
-                kriptoDB.coinDao.insertCoins(coinsRemote)
+                kriptoDB.coinDao.insertCoins(coinsRemote.map { it.toCoinEntity() })
             }
 
             Resource.Success<List<Coin>>(data = coinsDb)

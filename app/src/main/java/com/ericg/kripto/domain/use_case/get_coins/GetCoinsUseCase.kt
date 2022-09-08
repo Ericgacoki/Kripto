@@ -16,7 +16,7 @@ class GetCoinsUseCase @Inject constructor(
         when (val coins = repository.getCoins()) {
             is Resource.Success -> emit(coins)
             else -> {
-                emit(Resource.Error<List<Coin>>(data = null, coins.message!!))
+                emit(Resource.Error<List<Coin>>(message = coins.message!!))
             }
         }
     }

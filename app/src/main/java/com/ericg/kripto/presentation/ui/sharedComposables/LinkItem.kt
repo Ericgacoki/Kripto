@@ -1,4 +1,4 @@
-package com.ericg.kripto.presentation.screen.coin_details.component
+package com.ericg.kripto.presentation.ui.sharedComposables
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
