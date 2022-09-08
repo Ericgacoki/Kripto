@@ -1,4 +1,4 @@
-package com.ericg.kripto.presentation.ui
+package com.ericg.kripto.presentation.ui.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

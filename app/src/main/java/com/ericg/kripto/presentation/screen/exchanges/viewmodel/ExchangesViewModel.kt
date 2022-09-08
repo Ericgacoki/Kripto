@@ -4,17 +4,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ericg.kripto.domain.model.Exchange
 import com.ericg.kripto.domain.use_case.get_exchanges.GetExchangesUseCase
+import com.ericg.kripto.domain.use_case.search_exchange.SearchExchangeUseCase
 import com.ericg.kripto.presentation.screen.exchanges.event.ExchangesUiEvent
 import com.ericg.kripto.presentation.screen.exchanges.state.ExchangesState
 import com.ericg.kripto.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class ExchangesViewModel @Inject constructor(
-    private val exchangesUseCase: GetExchangesUseCase
+    private val exchangesUseCase: GetExchangesUseCase,
+    private val searchExchangeUseCase: SearchExchangeUseCase
 ) : ViewModel() {
     private val _state: MutableStateFlow<ExchangesState> = MutableStateFlow(ExchangesState())
     var state: StateFlow<ExchangesState> = _state.asStateFlow()
@@ -34,7 +35,7 @@ class ExchangesViewModel @Inject constructor(
                 exchangesUseCase().onEach { result ->
                     when (result) {
                         is Resource.Success -> {
-                            val exchanges = result.data?.take(500) ?: emptyList()
+                            val exchanges = result.data ?: emptyList()
                             _state.value = ExchangesState(exchanges = exchanges)
                             initialExchanges = result.data ?: emptyList()
                         }
@@ -54,13 +55,20 @@ class ExchangesViewModel @Inject constructor(
                 if (event.searchParams.isNotEmpty()) {
                     searchParams = event.searchParams.trim()
 
-                    _state.value = ExchangesState(isLoading = true)
-
-                    val searchResult = initialExchanges.filter {
-                        it.name?.contains(searchParams, ignoreCase = true) ?: false
-                    }
-                    _state.value = ExchangesState(exchanges = searchResult)
-
+                    searchExchangeUseCase(searchParams).onEach {
+                        when(it){
+                            is Resource.Loading -> {
+                                _state.value = ExchangesState(isLoading = true)
+                            }
+                            is Resource.Success -> {
+                                val result = it.data?.take(250) ?: emptyList()
+                                _state.value = ExchangesState(isLoading = false, exchanges = result)
+                            }
+                            is Resource.Error -> {
+                                _state.value = ExchangesState(error = it.message!!)
+                            }
+                        }
+                    }.launchIn(viewModelScope)
                 } else {
                     searchParams = ""
                     _state.value = ExchangesState(exchanges = initialExchanges.take(500))

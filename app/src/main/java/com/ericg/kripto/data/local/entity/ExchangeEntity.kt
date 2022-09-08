@@ -2,6 +2,8 @@ package com.ericg.kripto.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.ericg.kripto.data.local.typeconverter.DataTypeConverters
 
 @Entity(tableName = "exchanges")
 data class ExchangeEntity(
@@ -14,5 +16,8 @@ data class ExchangeEntity(
     val reportedRank: Int,
     val markets: Int,
     val currencies: Int,
-    // val links: Links,
+    @TypeConverters(DataTypeConverters::class)
+    val twitterLinks: List<String>?,
+    @TypeConverters(DataTypeConverters::class)
+    val websiteLinks: List<String>?,
 )

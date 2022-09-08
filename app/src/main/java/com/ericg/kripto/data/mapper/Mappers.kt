@@ -1,6 +1,7 @@
-package com.ericg.kripto.mapper
+package com.ericg.kripto.data.mapper
 
 import com.ericg.kripto.data.local.entity.CoinEntity
+import com.ericg.kripto.data.local.entity.ExchangeEntity
 import com.ericg.kripto.data.remote.dto.*
 import com.ericg.kripto.domain.model.*
 
@@ -84,26 +85,41 @@ internal fun ExchangeDto.toExchange(): Exchange {
     )
 }
 
-internal fun ExchangeDetailsDto.toExchangeDetails(): ExchangeDetails {
-    return ExchangeDetails(
+internal fun ExchangeDto.toExchangeEntity(): ExchangeEntity {
+    return ExchangeEntity(
+        id = id ?: "",
+        name = name ?: "",
+        description = description ?: "",
+        active = active ?: false,
+        adjustedRank = adjustedRank ?: 0,
+        reportedRank = reportedRank ?: 0,
+        markets = markets ?: 0,
+        currencies = currencies ?: 0,
+        twitterLinks = linksDto?.twitter ?: emptyList(),
+        websiteLinks = linksDto?.website ?: emptyList()
+    )
+}
+
+internal fun ExchangeEntity.toExchange(): Exchange {
+    return Exchange(
+        id = id,
+        name = name,
+        description = description,
         active = active,
         adjustedRank = adjustedRank,
-        apiStatus = apiStatus,
-        confidenceScore = confidenceScore,
-        currencies = currencies,
-        description = description,
-        fiats = fiats,
-        id = id,
-        lastUpdated = lastUpdated,
-        links = linksDto?.toLinks(),
-        markets = markets,
-        marketsDataFetched = marketsDataFetched,
-        message = message,
-        name = name,
-        quotes = quotesDto.toQuotes(),
         reportedRank = reportedRank,
-        websiteStatus = websiteStatus,
-        imgRev = imgRev
+        markets = markets,
+        currencies = currencies,
+        links = Links(twitterLinks, websiteLinks),
+        apiStatus = null,
+        confidenceScore = null,
+        fiats = null,
+        lastUpdated = null,
+        marketsDataFetched = null,
+        message = null,
+        quotes = null,
+        sessionsPerMonth = null,
+        websiteStatus = null
     )
 }
 
@@ -192,8 +208,8 @@ private fun LinksExtendedDto.toLinksExtended(): LinksExtended {
     return LinksExtended(url = url, type = type, stats = statsDto.toStats())
 }
 
-private fun WhitepaperDto.toWhitePaper(): Whitepaper {
-    return Whitepaper(
+private fun WhitePaperDto.toWhitePaper(): WhitePaper {
+    return WhitePaper(
         link = link,
         thumbnail = thumbnail
     )

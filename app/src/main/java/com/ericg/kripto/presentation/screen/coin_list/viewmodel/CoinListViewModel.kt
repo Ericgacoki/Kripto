@@ -29,21 +29,13 @@ class CoinListViewModel @Inject constructor(
         onEvent(CoinListUiEvent.GetCoins)
     }
 
-    /**
-     * NOTE:
-     *     Since the API doesn't support paging, the coins endpoint returns OVER 8000 items
-     *     at once which is irrelevant to display on the UI. For this reason,
-     *     this function only takes the first 500 items ONLY from the database.
-     *     Well, that's not my fault!
-     */
-
     fun onEvent(event: CoinListUiEvent) {
         when (event) {
             is CoinListUiEvent.GetCoins -> {
-                getCoinsUseCase.invoke().onEach { result ->
+                getCoinsUseCase().onEach { result ->
                     when (result) {
                         is Resource.Success -> {
-                            val coins = result.data?.take(500) ?: emptyList()
+                            val coins = result.data ?: emptyList()
                             _state.value =
                                 CoinListState(coins = coins)
                             initialCoins = result.data ?: emptyList()

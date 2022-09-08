@@ -9,6 +9,7 @@ import com.ericg.kripto.domain.use_case.get_coin_details.GetCoinDetailsUseCase
 import com.ericg.kripto.domain.use_case.get_coins.GetCoinsUseCase
 import com.ericg.kripto.domain.use_case.get_exchanges.GetExchangesUseCase
 import com.ericg.kripto.domain.use_case.search_coin.SearchCoinUseCase
+import com.ericg.kripto.domain.use_case.search_exchange.SearchExchangeUseCase
 import com.ericg.kripto.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -71,6 +72,12 @@ object AppModule {
     @Singleton
     fun providesExchangesUseCase(repository: KriptoRepository): GetExchangesUseCase {
         return GetExchangesUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesSearchExchangesUseCase(repository: KriptoRepository): SearchExchangeUseCase {
+        return SearchExchangeUseCase(repository)
     }
 
     @Provides

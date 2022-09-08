@@ -35,7 +35,7 @@ data class CoinDetailsDto(
     val links: CoinDetailLinkDto?,
     @SerializedName("links_extended")
     val linksExtendedDto: List<LinksExtendedDto>?,
-    val whitepaperDto: WhitepaperDto?,
+    val whitepaperDto: WhitePaperDto?,
     @SerializedName("first_data_at")
     val firstDataAt: String?,
     @SerializedName("last_data_at")
