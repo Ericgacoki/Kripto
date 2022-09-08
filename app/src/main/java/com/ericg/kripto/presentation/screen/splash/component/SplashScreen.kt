@@ -11,6 +11,7 @@ import com.ericg.kripto.R
 import com.ericg.kripto.presentation.screen.destinations.CoinLIstScreenDestination
 import com.ericg.kripto.util.LottieLoader
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.delay
 

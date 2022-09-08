@@ -12,7 +12,7 @@ interface KriptoRepository {
 
     suspend fun getExchanges(): Resource<List<Exchange>>
 
-    suspend fun getExchangeDetails(exchangeId: String): Resource<ExchangeDetails>
+    suspend fun searchExchange(params: String): Resource<List<Exchange>>
 
     suspend fun getPriceConversion(
         amount: Double,
