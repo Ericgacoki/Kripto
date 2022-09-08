@@ -2,11 +2,12 @@ package com.ericg.kripto.di
 
 import android.app.Application
 import androidx.room.Room
-import com.ericg.kripto.data.local.KriptoDatabase
-import com.ericg.kripto.data.remote.ApiService
+import com.ericg.kripto.data.local.database.KriptoDatabase
+import com.ericg.kripto.data.remote.api.ApiService
 import com.ericg.kripto.domain.repository.KriptoRepository
 import com.ericg.kripto.domain.use_case.get_coin_details.GetCoinDetailsUseCase
 import com.ericg.kripto.domain.use_case.get_coins.GetCoinsUseCase
+import com.ericg.kripto.domain.use_case.get_exchanges.GetExchangesUseCase
 import com.ericg.kripto.domain.use_case.search_coin.SearchCoinUseCase
 import com.ericg.kripto.util.Constants.BASE_URL
 import dagger.Module
@@ -64,6 +65,12 @@ object AppModule {
     @Singleton
     fun providesCoinDetailsUseCase(repository: KriptoRepository): GetCoinDetailsUseCase {
         return GetCoinDetailsUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesExchangesUseCase(repository: KriptoRepository): GetExchangesUseCase {
+        return GetExchangesUseCase(repository)
     }
 
     @Provides

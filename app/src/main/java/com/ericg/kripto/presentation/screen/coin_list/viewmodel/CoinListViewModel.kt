@@ -40,7 +40,7 @@ class CoinListViewModel @Inject constructor(
     fun onEvent(event: CoinListUiEvent) {
         when (event) {
             is CoinListUiEvent.GetCoins -> {
-                getCoinsUseCase().onEach { result ->
+                getCoinsUseCase.invoke().onEach { result ->
                     when (result) {
                         is Resource.Success -> {
                             val coins = result.data?.take(500) ?: emptyList()
@@ -62,12 +62,6 @@ class CoinListViewModel @Inject constructor(
             is CoinListUiEvent.SearchCoin -> {
                 if (event.searchParams.isNotEmpty()) {
                     searchParams = event.searchParams.trim()
-
-                    /*_state.value = _state.value.copy(coins = initialCoins.filter { coin ->
-                        (coin.name.contains(event.searchParams.trim(), ignoreCase = true)) ||
-                                (coin.rank.toString()
-                                    .contains(event.searchParams.trim(), ignoreCase = true))
-                    })*/
 
                     searchCoinsUseCase(searchParams).onEach { result ->
                         when (result) {

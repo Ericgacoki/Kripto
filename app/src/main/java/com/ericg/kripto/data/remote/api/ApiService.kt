@@ -1,4 +1,4 @@
-package com.ericg.kripto.data.remote
+package com.ericg.kripto.data.remote.api
 
 import com.ericg.kripto.data.remote.dto.*
 import retrofit2.http.GET

@@ -1,15 +1,17 @@
-package com.ericg.kripto.data.remote.dto
+package com.ericg.kripto.data.local.entity
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-data class CoinDto(
+@Entity(tableName = "coins")
+data class CoinEntity(
+    @PrimaryKey(autoGenerate = false)
     val id: String,
     val name: String,
     val symbol: String,
     val rank: Int,
-    @SerializedName("is_new")
     val isNew: Boolean,
-    @SerializedName("is_active")
     val isActive: Boolean,
     val type: String
 )

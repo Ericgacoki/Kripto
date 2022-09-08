@@ -1,10 +1,35 @@
 package com.ericg.kripto.mapper
 
+import com.ericg.kripto.data.local.entity.CoinEntity
 import com.ericg.kripto.data.remote.dto.*
 import com.ericg.kripto.domain.model.*
 
 internal fun CoinDto.toCoin(): Coin {
     return Coin(
+        id = id,
+        name = name,
+        symbol = symbol,
+        rank = rank,
+        isNew = isNew,
+        isActive = isActive,
+        type = type
+    )
+}
+
+internal fun CoinEntity.toCoin(): Coin {
+    return Coin(
+        id = id,
+        name = name,
+        symbol = symbol,
+        rank = rank,
+        isNew = isNew,
+        isActive = isActive,
+        type = type
+    )
+}
+
+internal fun CoinDto.toCoinEntity(): CoinEntity {
+    return CoinEntity(
         id = id,
         name = name,
         symbol = symbol,
@@ -44,15 +69,15 @@ internal fun ExchangeDto.toExchange(): Exchange {
         confidenceScore = confidenceScore,
         currencies = currencies,
         description = description,
-        fiats = fiatDtos.map { it.toFiat() },
+        fiats = fiatDtos?.map { it.toFiat() },
         id = id,
         lastUpdated = lastUpdated,
-        links = linksDto.toLinks(),
+        links = linksDto?.toLinks(),
         markets = markets,
         marketsDataFetched = marketsDataFetched,
         message = message,
         name = name,
-        quotes = quotesDto.toQuotes(),
+        quotes = quotesDto?.toQuotes(),
         reportedRank = reportedRank,
         sessionsPerMonth = sessionsPerMonth,
         websiteStatus = websiteStatus
@@ -70,7 +95,7 @@ internal fun ExchangeDetailsDto.toExchangeDetails(): ExchangeDetails {
         fiats = fiats,
         id = id,
         lastUpdated = lastUpdated,
-        links = linksDto.toLinks(),
+        links = linksDto?.toLinks(),
         markets = markets,
         marketsDataFetched = marketsDataFetched,
         message = message,
