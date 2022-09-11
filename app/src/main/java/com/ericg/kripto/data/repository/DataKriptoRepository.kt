@@ -24,7 +24,8 @@ class DataKriptoRepository @Inject constructor(
 
             if (coinsDb.isEmpty()) {
                 val coinsRemote = api.getCoins()
-                coinsDb = coinsRemote.take(500).map { it.toCoin() } // Next time use a Flow to observe the DB
+                coinsDb = coinsRemote.take(500)
+                    .map { it.toCoin() } // Next time use a Flow to observe the DB
                 kriptoDB.coinDao.insertCoins(coinsRemote.map { it.toCoinEntity() })
             }
 
@@ -105,25 +106,23 @@ class DataKriptoRepository @Inject constructor(
 
     override suspend fun getPriceConversion(
         amount: Double,
-        fromId: String,
-        toId: String
+        baseCurrencyId: String,
+        quoteCurrencyId: String
     ): Resource<PriceConversion> {
         return try {
             val priceConversion = api.getPriceConversion(
                 amount = amount,
-                baseCurrencyId = fromId,
-                quoteCurrencyId = toId
+                baseCurrencyId = baseCurrencyId,
+                quoteCurrencyId = quoteCurrencyId
             ).toPriceConversion()
             Resource.Success<PriceConversion>(data = priceConversion)
-
         } catch (e: IOException) {
-            Timber.e(message = "Couldn't reach server. Check your internet connection!")
             Resource.Error<PriceConversion>(message = "Couldn't reach server. Check your internet connection!")
 
         } catch (e: HttpException) {
-            Timber.e(message = e.localizedMessage ?: "An unexpected error occurred!")
             Resource.Error<PriceConversion>(
-                message = e.localizedMessage ?: "An unexpected error occurred!"
+                message = if (e.response()?.code() == 400)
+                    "Invalid parameters" else e.localizedMessage ?: "An unexpected error occurred!"
             )
         }
     }
