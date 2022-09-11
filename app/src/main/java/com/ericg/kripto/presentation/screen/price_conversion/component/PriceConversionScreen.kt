@@ -23,7 +23,6 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -73,7 +72,7 @@ fun PriceConversionScreen(
     ) { padding ->
         val paddingValues = padding
 
-        val baseCurrencies by rememberSaveable {
+        val baseCurrencies by remember {
             mutableStateOf(
                 listOf(
                     // TEST ITEMS
@@ -88,7 +87,7 @@ fun PriceConversionScreen(
             )
         }
 
-        val quoteCurrencies by rememberSaveable {
+        val quoteCurrencies by remember {
             mutableStateOf(
                 listOf(
                     // TEST ITEMS
@@ -109,7 +108,7 @@ fun PriceConversionScreen(
          * NOTE: The first value of this pair is ALWAYS taken as the
          *       Base Currency regardless of the selection order!
          * */
-        var selectedConversionPair by rememberSaveable {
+        var selectedConversionPair by remember {
             mutableStateOf(
                 Pair(
                     currencies.first[0],
@@ -117,10 +116,10 @@ fun PriceConversionScreen(
                 )
             )
         }
-        var isBaseCurrencyMenuExpanded by rememberSaveable {
+        var isBaseCurrencyMenuExpanded by remember {
             mutableStateOf(false)
         }
-        var isQuoteCurrencyMenuExpanded by rememberSaveable {
+        var isQuoteCurrencyMenuExpanded by remember {
             mutableStateOf(false)
         }
 
@@ -144,17 +143,17 @@ fun PriceConversionScreen(
                 .fillMaxSize()
                 .padding(start = 12.dp, end = 12.dp, top = 54.dp)
         ) {
-            var amountInput by rememberSaveable { mutableStateOf("") }
+            var amountInput by remember { mutableStateOf("") }
             val focusRequester = remember { FocusRequester() }.also {
                 LaunchedEffect(key1 = Unit) {
                     it.requestFocus()
                 }
             }
             val focusManager = LocalFocusManager.current
-            var isError by rememberSaveable {
+            var isError by remember {
                 mutableStateOf(false)
             }
-            var showConversionState by rememberSaveable {
+            var showConversionState by remember {
                 mutableStateOf(false)
             }
 
