@@ -16,7 +16,7 @@ interface KriptoRepository {
 
     suspend fun getPriceConversion(
         amount: Double,
-        fromId: String,
-        toId: String
+        baseCurrencyId: String,
+        quoteCurrencyId: String
     ): Resource<PriceConversion>
 }
