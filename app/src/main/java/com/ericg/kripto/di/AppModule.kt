@@ -7,6 +7,7 @@ import com.ericg.kripto.data.remote.api.ApiService
 import com.ericg.kripto.domain.repository.KriptoRepository
 import com.ericg.kripto.domain.use_case.get_coin_details.GetCoinDetailsUseCase
 import com.ericg.kripto.domain.use_case.get_coins.GetCoinsUseCase
+import com.ericg.kripto.domain.use_case.get_conversion.GetConversionUseCase
 import com.ericg.kripto.domain.use_case.get_exchanges.GetExchangesUseCase
 import com.ericg.kripto.domain.use_case.search_coin.SearchCoinUseCase
 import com.ericg.kripto.domain.use_case.search_exchange.SearchExchangeUseCase
@@ -82,6 +83,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun providesGetConversionUseCase(repository: KriptoRepository): GetConversionUseCase {
+        return GetConversionUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
     fun providesKriptoDatabase(application: Application): KriptoDatabase {
         return Room.databaseBuilder(
             application.applicationContext,
@@ -90,4 +97,3 @@ object AppModule {
         ).fallbackToDestructiveMigration().build()
     }
 }
-
