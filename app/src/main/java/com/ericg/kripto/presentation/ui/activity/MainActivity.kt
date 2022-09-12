@@ -5,24 +5,23 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement.Absolute.SpaceAround
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.ericg.kripto.presentation.screen.NavGraphs
 import com.ericg.kripto.presentation.screen.destinations.CoinLIstScreenDestination
@@ -30,7 +29,6 @@ import com.ericg.kripto.presentation.screen.destinations.ExchangesScreenDestinat
 import com.ericg.kripto.presentation.screen.destinations.PriceConversionScreenDestination
 import com.ericg.kripto.presentation.theme.ColorPrimary
 import com.ericg.kripto.presentation.theme.KriptoTheme
-import com.ericg.kripto.presentation.theme.NoRippleTheme
 import com.ericg.kripto.presentation.ui.sharedComposables.BottomNavItem
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
@@ -47,7 +45,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             KriptoTheme {
-                var showTopAndBottomBar by remember { mutableStateOf(true) }
+                var showBottomBar by remember { mutableStateOf(true) }
                 val navController = rememberAnimatedNavController()
                 val navHostEngine = rememberAnimatedNavHostEngine(
                     navHostContentAlignment = Alignment.TopCenter,
@@ -72,90 +70,85 @@ class MainActivity : ComponentActivity() {
                     BottomNavItem.PriceConversion
                 )
 
-                showTopAndBottomBar = route in listOf(
+                showBottomBar = route in listOf(
                     CoinLIstScreenDestination.route,
                     ExchangesScreenDestination.route,
                     PriceConversionScreenDestination.route
                 )
-
                 Scaffold(
+                    modifier = Modifier.fillMaxSize(),
                     scaffoldState = scaffoldState,
                     bottomBar = {
-                        if (showTopAndBottomBar) {
+                        if (showBottomBar) {
                             BottomNavigation(
-                                backgroundColor = White,
-                                modifier = Modifier
-                                    .padding(12.dp)
-                                    .shadow(
-                                        ambientColor = ColorPrimary,
-                                        spotColor = ColorPrimary,
-                                        shape = RoundedCornerShape(8.dp),
-                                        clip = true,
-                                        elevation = 16.dp
-                                    )
+                                modifier = Modifier.height(72.dp),
+                                elevation = 8.dp,
+                                backgroundColor = White
                             ) {
                                 val navBackEntry by navController.currentBackStackEntryAsState()
                                 val currentDestination = navBackEntry?.destination
 
-                                CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
-                                    bottomBarItems.forEach { item ->
-                                        val selected =
-                                            currentDestination?.route?.contains(item.destination.route) == true
-                                        BottomNavigationItem(
-                                            icon = {
-                                                Box(
-                                                    modifier = Modifier.fillMaxSize(),
-                                                    contentAlignment = Alignment.Center
-                                                ) {
-
-                                                    if (selected) {
-                                                        Box(
-                                                            modifier = Modifier
-                                                                .padding(all = 4.dp)
-                                                                .fillMaxSize()
-                                                                .clip(RoundedCornerShape(4.dp))
-                                                                .background(ColorPrimary.copy(alpha = .12F))
-                                                        ) {
-                                                            Row(
-                                                                modifier = Modifier
-                                                                    .padding(vertical = 8.dp)
-                                                                    .fillMaxSize(),
-                                                                horizontalArrangement = SpaceAround,
-                                                                verticalAlignment = CenterVertically
-                                                            ) {
-                                                                Icon(
-                                                                    modifier = Modifier.padding(
-                                                                        start = 4.dp
-                                                                    ),
-                                                                    painter = painterResource(id = item.icon),
-                                                                    tint = if (selected) Color.Unspecified else Color.Unspecified.copy(
-                                                                        alpha = .5F
-                                                                    ),
-                                                                    contentDescription = "Icon"
-                                                                )
-                                                            }
-                                                        }
-                                                    } else {
+                                bottomBarItems.forEach { item ->
+                                    val selected =
+                                        currentDestination?.route?.contains(item.destination.route) == true
+                                    BottomNavigationItem(
+                                        icon = {
+                                            Box(
+                                                modifier = Modifier.fillMaxSize(.62F),
+                                                contentAlignment = Center
+                                            ) {
+                                                if (selected) {
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .padding(vertical = 4.dp)
+                                                            .clip(RoundedCornerShape(100))
+                                                            .background(ColorPrimary.copy(alpha = .12F))
+                                                            .padding(
+                                                                horizontal = 20.dp,
+                                                                vertical = 6.dp
+                                                            ),
+                                                        contentAlignment = Center
+                                                    ) {
                                                         Icon(
+                                                            modifier = Modifier,
                                                             painter = painterResource(id = item.icon),
-                                                            contentDescription = "Icon"
+                                                            tint = ColorPrimary,
+                                                            contentDescription = "Nav icon"
                                                         )
                                                     }
+                                                } else {
+                                                    Icon(
+                                                        painter = painterResource(id = item.icon),
+                                                        tint = ColorPrimary,
+                                                        contentDescription = "Icon"
+                                                    )
                                                 }
-                                            },
-                                            selected = currentDestination?.route?.contains(item.destination.route) == true,
-                                            onClick = {
-                                                navController.navigate(item.destination.route) {
-                                                    navController.graph.startDestinationRoute?.let { route ->
-                                                        popUpTo(route) {
-                                                            saveState = true
-                                                        }
+                                            }
+                                        },
+                                        label = {
+                                            Text(
+                                                text = item.title,
+                                                modifier = Modifier.padding(top = 2.dp),
+                                                color = ColorPrimary,
+                                                fontSize = 12.sp,
+                                                fontWeight = FontWeight.Medium
+                                            )
+                                        },
+                                        alwaysShowLabel = false,
+                                        selectedContentColor = ColorPrimary,
+                                        unselectedContentColor = ColorPrimary.copy(alpha = .24F),
+                                        selected = currentDestination?.route?.contains(item.destination.route) == true,
+                                        onClick = {
+                                            navController.navigate(item.destination.route) {
+                                                navController.graph.startDestinationRoute?.let { route ->
+                                                    popUpTo(route) {
+                                                        saveState = true
                                                     }
-                                                    restoreState = true
-                                                    launchSingleTop = true
                                                 }
-                                            })
-                                    }
+                                                restoreState = true
+                                                launchSingleTop = true
+                                            }
+                                        })
                                 }
                             }
                         }

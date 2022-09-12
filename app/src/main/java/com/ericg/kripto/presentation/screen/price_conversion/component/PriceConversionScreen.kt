@@ -23,7 +23,6 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -73,7 +72,7 @@ fun PriceConversionScreen(
     ) { padding ->
         val paddingValues = padding
 
-        val baseCurrencies by rememberSaveable {
+        val baseCurrencies by remember {
             mutableStateOf(
                 listOf(
                     // TEST ITEMS
@@ -88,7 +87,7 @@ fun PriceConversionScreen(
             )
         }
 
-        val quoteCurrencies by rememberSaveable {
+        val quoteCurrencies by remember {
             mutableStateOf(
                 listOf(
                     // TEST ITEMS
@@ -109,7 +108,7 @@ fun PriceConversionScreen(
          * NOTE: The first value of this pair is ALWAYS taken as the
          *       Base Currency regardless of the selection order!
          * */
-        var selectedConversionPair by rememberSaveable {
+        var selectedConversionPair by remember {
             mutableStateOf(
                 Pair(
                     currencies.first[0],
@@ -117,10 +116,10 @@ fun PriceConversionScreen(
                 )
             )
         }
-        var isBaseCurrencyMenuExpanded by rememberSaveable {
+        var isBaseCurrencyMenuExpanded by remember {
             mutableStateOf(false)
         }
-        var isQuoteCurrencyMenuExpanded by rememberSaveable {
+        var isQuoteCurrencyMenuExpanded by remember {
             mutableStateOf(false)
         }
 
@@ -144,18 +143,21 @@ fun PriceConversionScreen(
                 .fillMaxSize()
                 .padding(start = 12.dp, end = 12.dp, top = 54.dp)
         ) {
-            var amountInput by rememberSaveable { mutableStateOf("") }
+            var amountInput by remember { mutableStateOf("") }
             val focusRequester = remember { FocusRequester() }.also {
                 LaunchedEffect(key1 = Unit) {
                     it.requestFocus()
                 }
             }
             val focusManager = LocalFocusManager.current
-            var isError by rememberSaveable {
+            var isError by remember {
                 mutableStateOf(false)
             }
-            var showConversionState by rememberSaveable {
+            var showConversionState by remember {
                 mutableStateOf(false)
+            }
+            var buttonText by remember {
+                mutableStateOf("CONVERT")
             }
 
             TextField(
@@ -167,7 +169,7 @@ fun PriceConversionScreen(
                 ),
                 textStyle = TextStyle.Default.copy(
                     fontSize = 28.sp,
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Start,
                     color = ColorPrimary,
                     fontWeight = FontWeight.Medium
                 ),
@@ -426,11 +428,7 @@ fun PriceConversionScreen(
                     },
                 contentAlignment = Center
             ) {
-                val text = when (conversionState.value) {
-                    is ConversionState.Loading -> "CONVERTING..."
-                    else -> "CONVERT"
-                }
-                Text(text = text, color = Color.White, fontWeight = FontWeight.Medium)
+                Text(text = buttonText, color = Color.White, fontWeight = FontWeight.Medium)
             }
 
             LaunchedEffect(key1 = amountInput) {
@@ -443,9 +441,15 @@ fun PriceConversionScreen(
                 exit = fadeOut(animationSpec = tween(durationMillis = 1000))
             ) {
                 when (conversionState.value) {
-                    is ConversionState.NotLoading -> {}
-                    is ConversionState.Loading -> {}
+                    is ConversionState.NotLoading -> {
+                        buttonText = "CONVERT"
+                    }
+                    is ConversionState.Loading -> {
+                        buttonText = "CONVERTING..."
+                    }
                     is ConversionState.Error -> {
+                        buttonText = "CONVERT"
+
                         Text(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -458,6 +462,8 @@ fun PriceConversionScreen(
                         )
                     }
                     is ConversionState.Success -> {
+                        buttonText = "CONVERT"
+
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -466,7 +472,7 @@ fun PriceConversionScreen(
                         ) {
                             Row(verticalAlignment = CenterVertically) {
                                 Text(
-                                    text = "${selectedConversionPair.second.symbol}:  ",
+                                    text = "${selectedConversionPair.second.symbol}   ",
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Medium,
                                     color = ColorPrimary.copy(alpha = .61F)

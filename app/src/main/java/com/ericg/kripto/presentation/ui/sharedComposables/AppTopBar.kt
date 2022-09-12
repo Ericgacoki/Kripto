@@ -49,78 +49,80 @@ fun AppTopBar(
             color = ColorPrimary
         )
 
-        if (showSearchBar) Box(
-            modifier = Modifier
-                .padding(bottom = 4.dp)
-                .clip(CircleShape)
-                .background(Color(0XFFEEEEEE))
-                .fillMaxWidth()
-                .height(54.dp)
-        ) {
-            var searchParam: String by remember { mutableStateOf(initialValue) }
-            val focusRequester = remember { FocusRequester() }
-            val focusManager = LocalFocusManager.current
-
-            TextField(
-                value = searchParam,
-                onValueChange = { newValue ->
-                    searchParam = if (newValue.trim().isNotEmpty()) newValue else ""
-                    onSearchParamChange(newValue)
-                },
+        AnimatedVisibility(visible = showSearchBar) {
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .focusRequester(focusRequester = focusRequester),
-                singleLine = true,
-                placeholder = {
-                    Text(
-                        text = "Search...",
-                        color = ColorPrimary.copy(alpha = 0.56F)
-                    )
-                },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(
-                    textColor = ColorPrimary,
-                    backgroundColor = Color.Transparent,
-                    disabledTextColor = Color.LightGray,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ), keyboardOptions = KeyboardOptions(
-                    autoCorrect = true,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Search
-                ),
-                keyboardActions = KeyboardActions(
-                    onSearch = {
-                        onSearchParamChange(searchParam)
-                    }
-                ),
-                trailingIcon = {
-                    Row {
-                        AnimatedVisibility(visible = searchParam.trim().isNotEmpty()) {
+                    .padding(bottom = 4.dp)
+                    .clip(CircleShape)
+                    .background(Color(0XFFEEEEEE))
+                    .fillMaxWidth()
+                    .height(54.dp)
+            ) {
+                var searchParam: String by remember { mutableStateOf(initialValue) }
+                val focusRequester = remember { FocusRequester() }
+                val focusManager = LocalFocusManager.current
+
+                TextField(
+                    value = searchParam,
+                    onValueChange = { newValue ->
+                        searchParam = if (newValue.trim().isNotEmpty()) newValue else ""
+                        onSearchParamChange(newValue)
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .focusRequester(focusRequester = focusRequester),
+                    singleLine = true,
+                    placeholder = {
+                        Text(
+                            text = "Search...",
+                            color = ColorPrimary.copy(alpha = 0.56F)
+                        )
+                    },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(
+                        textColor = ColorPrimary,
+                        backgroundColor = Color.Transparent,
+                        disabledTextColor = Color.LightGray,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ), keyboardOptions = KeyboardOptions(
+                        autoCorrect = true,
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Search
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onSearch = {
+                            onSearchParamChange(searchParam)
+                        }
+                    ),
+                    trailingIcon = {
+                        Row {
+                            AnimatedVisibility(visible = searchParam.trim().isNotEmpty()) {
+                                IconButton(onClick = {
+                                    focusManager.clearFocus()
+                                    searchParam = ""
+                                    onSearchParamChange(searchParam)
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Clear,
+                                        tint = ColorPrimary.copy(alpha = 0.64F),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+
                             IconButton(onClick = {
-                                focusManager.clearFocus()
-                                searchParam = ""
                                 onSearchParamChange(searchParam)
                             }) {
                                 Icon(
-                                    imageVector = Icons.Default.Clear,
+                                    painter = painterResource(id = R.drawable.ic_search),
                                     tint = ColorPrimary.copy(alpha = 0.64F),
                                     contentDescription = null
                                 )
                             }
                         }
-
-                        IconButton(onClick = {
-                            onSearchParamChange(searchParam)
-                        }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_search),
-                                tint = ColorPrimary.copy(alpha = 0.64F),
-                                contentDescription = null
-                            )
-                        }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }

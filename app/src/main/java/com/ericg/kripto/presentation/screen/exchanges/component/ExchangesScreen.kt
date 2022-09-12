@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -21,8 +22,8 @@ import com.ericg.kripto.presentation.ui.sharedComposables.AppTopBar
 import com.ericg.kripto.presentation.ui.sharedComposables.NoMatchFound
 import com.ericg.kripto.presentation.ui.sharedComposables.RetryButton
 import com.ericg.kripto.util.GifImageLoader
+import com.ericg.kripto.util.ext.isScrollingUp
 import com.ramcosta.composedestinations.annotation.Destination
-import timber.log.Timber
 
 @Destination
 @Composable
@@ -30,6 +31,7 @@ fun ExchangesScreen(
     exchangesViewModel: ExchangesViewModel = hiltViewModel()
 ) {
     val scaffoldState = rememberScaffoldState()
+    val lazyColumnState = rememberLazyListState()
     val exchangesState = exchangesViewModel.state.collectAsState()
 
     Scaffold(
@@ -40,7 +42,7 @@ fun ExchangesScreen(
         topBar = {
             AppTopBar(
                 title = "Exchanges",
-                showSearchBar = true,
+                showSearchBar = lazyColumnState.isScrollingUp(),
                 initialValue = exchangesViewModel.searchParams,
                 onSearchParamChange = { newParam ->
                     exchangesViewModel.onEvent(ExchangesUiEvent.SearchExchange(newParam))
@@ -59,7 +61,7 @@ fun ExchangesScreen(
             }
         } else if (exchangesState.value.exchanges.isNotEmpty()) {
 
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(modifier = Modifier.fillMaxSize(), state = lazyColumnState) {
                 itemsIndexed(exchangesState.value.exchanges) { index, exchange ->
                     ExchangeItem(exchange)
                     if (index != exchangesState.value.exchanges.lastIndex) {

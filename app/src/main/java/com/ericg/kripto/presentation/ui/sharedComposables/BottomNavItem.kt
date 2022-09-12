@@ -8,21 +8,25 @@ import com.ericg.kripto.presentation.screen.destinations.PriceConversionScreenDe
 
 sealed class BottomNavItem(
     val icon: Int,
-    val destination: Destination
+    val destination: Destination,
+    val title: String
 ) {
 
     object CoinList : BottomNavItem(
         icon = R.drawable.ic_coin,
-        destination = CoinLIstScreenDestination
+        destination = CoinLIstScreenDestination,
+        title = "Coins"
     )
 
     object Exchanges : BottomNavItem(
         icon = R.drawable.ic_exchange,
-        destination = ExchangesScreenDestination
+        destination = ExchangesScreenDestination,
+        title = "Exchanges"
     )
 
     object PriceConversion : BottomNavItem(
         icon = R.drawable.ic_convert,
-        destination = PriceConversionScreenDestination
+        destination = PriceConversionScreenDestination,
+        title = "Conversion"
     )
 }

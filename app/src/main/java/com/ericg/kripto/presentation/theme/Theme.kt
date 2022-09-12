@@ -39,10 +39,3 @@ fun KriptoTheme(darkTheme: Boolean = true, content: @Composable() () -> Unit) {
     )
 }
 
-internal object NoRippleTheme : RippleTheme {
-    @Composable
-    override fun defaultColor() = Color.Unspecified
-
-    @Composable
-    override fun rippleAlpha(): RippleAlpha = RippleAlpha(0.0F, 0.0F, 0.0F, 0.0F)
-}
