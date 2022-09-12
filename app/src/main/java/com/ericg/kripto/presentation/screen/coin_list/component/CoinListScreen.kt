@@ -4,9 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,6 +22,7 @@ import com.ericg.kripto.presentation.ui.sharedComposables.AppTopBar
 import com.ericg.kripto.presentation.ui.sharedComposables.NoMatchFound
 import com.ericg.kripto.presentation.ui.sharedComposables.RetryButton
 import com.ericg.kripto.util.GifImageLoader
+import com.ericg.kripto.util.ext.isScrollingUp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -32,15 +34,18 @@ fun CoinLIstScreen(
 ) {
 
     val coinListState = coinListViewModel.state.collectAsState()
+    val lazyColumnState = rememberLazyListState()
+    val scaffoldState = rememberScaffoldState()
 
     Scaffold(
         modifier = Modifier
             .background(Color.White)
             .fillMaxSize(),
+        scaffoldState = scaffoldState,
         topBar = {
             AppTopBar(
                 title = "Coins",
-                showSearchBar = true,
+                showSearchBar = lazyColumnState.isScrollingUp(),
                 initialValue = coinListViewModel.searchParams,
                 onSearchParamChange = { newParam ->
                     coinListViewModel.onEvent(CoinListUiEvent.SearchCoin(newParam))
@@ -59,7 +64,8 @@ fun CoinLIstScreen(
             }
         } else if (coinListState.value.coins.isNotEmpty()) {
             LazyColumn(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                state = lazyColumnState,
             ) {
                 itemsIndexed(coinListState.value.coins) { index, coin ->
                     CoinItem(
