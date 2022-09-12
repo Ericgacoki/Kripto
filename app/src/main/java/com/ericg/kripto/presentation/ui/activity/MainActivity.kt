@@ -11,10 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.ContentAlpha.medium
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -84,7 +82,8 @@ class MainActivity : ComponentActivity() {
                         if (showBottomBar) {
                             BottomNavigation(
                                 modifier = Modifier.height(72.dp),
-                                backgroundColor = ColorPrimary
+                                elevation = 8.dp,
+                                backgroundColor = White
                             ) {
                                 val navBackEntry by navController.currentBackStackEntryAsState()
                                 val currentDestination = navBackEntry?.destination
@@ -103,7 +102,7 @@ class MainActivity : ComponentActivity() {
                                                         modifier = Modifier
                                                             .padding(vertical = 4.dp)
                                                             .clip(RoundedCornerShape(100))
-                                                            .background(White.copy(alpha = .24F))
+                                                            .background(ColorPrimary.copy(alpha = .12F))
                                                             .padding(
                                                                 horizontal = 20.dp,
                                                                 vertical = 6.dp
@@ -113,14 +112,14 @@ class MainActivity : ComponentActivity() {
                                                         Icon(
                                                             modifier = Modifier,
                                                             painter = painterResource(id = item.icon),
-                                                            tint = White,
+                                                            tint = ColorPrimary,
                                                             contentDescription = "Nav icon"
                                                         )
                                                     }
                                                 } else {
                                                     Icon(
                                                         painter = painterResource(id = item.icon),
-                                                        tint = White,
+                                                        tint = ColorPrimary,
                                                         contentDescription = "Icon"
                                                     )
                                                 }
@@ -130,14 +129,14 @@ class MainActivity : ComponentActivity() {
                                             Text(
                                                 text = item.title,
                                                 modifier = Modifier.padding(top = 2.dp),
-                                                color = White,
+                                                color = ColorPrimary,
                                                 fontSize = 12.sp,
                                                 fontWeight = FontWeight.Medium
                                             )
                                         },
                                         alwaysShowLabel = false,
-                                        selectedContentColor = White,
-                                        unselectedContentColor = White.copy(alpha = .24F),
+                                        selectedContentColor = ColorPrimary,
+                                        unselectedContentColor = ColorPrimary.copy(alpha = .24F),
                                         selected = currentDestination?.route?.contains(item.destination.route) == true,
                                         onClick = {
                                             navController.navigate(item.destination.route) {
