@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -49,7 +52,14 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberAnimatedNavController()
                 val navHostEngine = rememberAnimatedNavHostEngine(
                     navHostContentAlignment = Alignment.TopCenter,
-                    rootDefaultAnimations = RootNavGraphDefaultAnimations.ACCOMPANIST_FADING,
+                    rootDefaultAnimations = RootNavGraphDefaultAnimations(
+                        enterTransition = {
+                            scaleIn(transformOrigin = TransformOrigin(0.25f, 0f))
+                        },
+                        exitTransition = {
+                            scaleOut(transformOrigin = TransformOrigin(0.75f, 1f))
+                        }
+                    )
                 )
 
                 val systemUiController = rememberSystemUiController()
