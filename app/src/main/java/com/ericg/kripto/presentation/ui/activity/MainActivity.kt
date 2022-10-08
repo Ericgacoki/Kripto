@@ -12,7 +12,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
@@ -30,7 +33,6 @@ import com.ericg.kripto.presentation.screen.NavGraphs
 import com.ericg.kripto.presentation.screen.destinations.CoinLIstScreenDestination
 import com.ericg.kripto.presentation.screen.destinations.ExchangesScreenDestination
 import com.ericg.kripto.presentation.screen.destinations.PriceConversionScreenDestination
-import com.ericg.kripto.presentation.theme.ColorPrimary
 import com.ericg.kripto.presentation.theme.KriptoTheme
 import com.ericg.kripto.presentation.ui.sharedComposables.BottomNavItem
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -43,7 +45,10 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class)
+    @OptIn(
+        ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class,
+        ExperimentalMaterial3Api::class
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -72,7 +77,6 @@ class MainActivity : ComponentActivity() {
 
                 val newBackStackEntry by navController.currentBackStackEntryAsState()
                 val route = newBackStackEntry?.destination?.route
-                val scaffoldState = rememberScaffoldState()
 
                 val bottomBarItems: List<BottomNavItem> = listOf(
                     BottomNavItem.CoinList,
@@ -87,13 +91,12 @@ class MainActivity : ComponentActivity() {
                 )
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    scaffoldState = scaffoldState,
                     bottomBar = {
                         if (showBottomBar) {
                             BottomNavigation(
                                 modifier = Modifier.height(72.dp),
                                 elevation = 8.dp,
-                                backgroundColor = White
+                                backgroundColor = MaterialTheme.colorScheme.surface
                             ) {
                                 val navBackEntry by navController.currentBackStackEntryAsState()
                                 val currentDestination = navBackEntry?.destination
@@ -112,7 +115,7 @@ class MainActivity : ComponentActivity() {
                                                         modifier = Modifier
                                                             .padding(vertical = 4.dp)
                                                             .clip(RoundedCornerShape(100))
-                                                            .background(ColorPrimary.copy(alpha = .12F))
+                                                            .background(MaterialTheme.colorScheme.secondaryContainer)
                                                             .padding(
                                                                 horizontal = 20.dp,
                                                                 vertical = 6.dp
@@ -122,14 +125,12 @@ class MainActivity : ComponentActivity() {
                                                         Icon(
                                                             modifier = Modifier,
                                                             painter = painterResource(id = item.icon),
-                                                            tint = ColorPrimary,
                                                             contentDescription = "Nav icon"
                                                         )
                                                     }
                                                 } else {
                                                     Icon(
                                                         painter = painterResource(id = item.icon),
-                                                        tint = ColorPrimary,
                                                         contentDescription = "Icon"
                                                     )
                                                 }
@@ -139,14 +140,13 @@ class MainActivity : ComponentActivity() {
                                             Text(
                                                 text = item.title,
                                                 modifier = Modifier.padding(top = 2.dp),
-                                                color = ColorPrimary,
                                                 fontSize = 12.sp,
                                                 fontWeight = FontWeight.Medium
                                             )
                                         },
                                         alwaysShowLabel = false,
-                                        selectedContentColor = ColorPrimary,
-                                        unselectedContentColor = ColorPrimary.copy(alpha = .24F),
+                                        selectedContentColor = MaterialTheme.colorScheme.primary,
+                                        unselectedContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                                         selected = currentDestination?.route?.contains(item.destination.route) == true,
                                         onClick = {
                                             navController.navigate(item.destination.route) {

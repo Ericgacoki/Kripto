@@ -7,17 +7,17 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ericg.kripto.R
 import com.ericg.kripto.presentation.screen.coin_list.event.CoinListUiEvent
 import com.ericg.kripto.presentation.screen.coin_list.viewmodel.CoinListViewModel
 import com.ericg.kripto.presentation.screen.destinations.CoinDetailsScreenDestination
-import com.ericg.kripto.presentation.theme.ColorPrimary
 import com.ericg.kripto.presentation.ui.sharedComposables.AppTopBar
 import com.ericg.kripto.presentation.ui.sharedComposables.NoMatchFound
 import com.ericg.kripto.presentation.ui.sharedComposables.RetryButton
@@ -39,7 +39,7 @@ fun CoinLIstScreen(
 
     Scaffold(
         modifier = Modifier
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .fillMaxSize(),
         scaffoldState = scaffoldState,
         topBar = {
@@ -93,7 +93,11 @@ fun CoinLIstScreen(
                                 .padding(start = 52.dp)
                                 .height((.5).dp)
                                 .fillMaxWidth(1F)
-                                .background(color = ColorPrimary.copy(alpha = 0.24F))
+                                .background(
+                                    color = MaterialTheme.colorScheme.onBackground.copy(
+                                        alpha = 0.24F
+                                    )
+                                )
                         )
                     } else {
                         Spacer(modifier = Modifier.height(80.dp))

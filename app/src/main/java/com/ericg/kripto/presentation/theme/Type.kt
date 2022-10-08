@@ -1,6 +1,6 @@
 package com.ericg.kripto.presentation.theme
 
-import androidx.compose.material.Typography
+import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -16,38 +16,90 @@ val poppinsFontFamily = FontFamily(
     Font(R.font.poppins_bold, weight = FontWeight.Bold),
 )
 
-// Set of Material typography styles to start with
 val Typography = Typography(
-    h1 = TextStyle(
-        fontFamily = poppinsFontFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 30.sp,
-    ),
-    h2 = TextStyle(
-        fontFamily = poppinsFontFamily,
+    headlineLarge = TextStyle(
         fontWeight = FontWeight.SemiBold,
-        fontSize = 24.sp
-    ),
-    h3 = TextStyle(
         fontFamily = poppinsFontFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 20.sp
+        fontSize = 32.sp,
+        lineHeight = 40.sp,
+        letterSpacing = 0.sp
     ),
-    h4 = TextStyle(
+    headlineMedium = TextStyle(
+        fontWeight = FontWeight.SemiBold,
         fontFamily = poppinsFontFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 16.sp
+        fontSize = 28.sp,
+        lineHeight = 36.sp,
+        letterSpacing = 0.sp
     ),
-    body1 = TextStyle(
+    headlineSmall = TextStyle(
+        fontWeight = FontWeight.SemiBold,
         fontFamily = poppinsFontFamily,
+        fontSize = 24.sp,
+        lineHeight = 32.sp,
+        letterSpacing = 0.sp
+    ),
+    titleLarge = TextStyle(
+        fontWeight = FontWeight.SemiBold,
+        fontFamily = poppinsFontFamily,
+        fontSize = 22.sp,
+        lineHeight = 28.sp,
+        letterSpacing = 0.sp
+    ),
+    titleMedium = TextStyle(
+        fontWeight = FontWeight.SemiBold,
+        fontFamily = poppinsFontFamily,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.15.sp
+    ),
+    titleSmall = TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontFamily = poppinsFontFamily,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.1.sp
+    ),
+    bodyLarge = TextStyle(
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
-    ),
-    body2 = TextStyle(
         fontFamily = poppinsFontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.15.sp
     ),
-    defaultFontFamily = poppinsFontFamily
+    bodyMedium = TextStyle(
+        fontWeight = FontWeight.Medium,
+        fontFamily = poppinsFontFamily,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.25.sp
+    ),
+    bodySmall = TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontFamily = poppinsFontFamily,
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.4.sp
+    ),
+    labelLarge = TextStyle(
+        fontWeight = FontWeight.SemiBold,
+        fontFamily = poppinsFontFamily,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.1.sp
+    ),
+    labelMedium = TextStyle(
+        fontWeight = FontWeight.SemiBold,
+        fontFamily = poppinsFontFamily,
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.5.sp
+    ),
+    labelSmall = TextStyle(
+        fontWeight = FontWeight.SemiBold,
+        fontFamily = poppinsFontFamily,
+        fontSize = 11.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.5.sp
+    )
 )
 
