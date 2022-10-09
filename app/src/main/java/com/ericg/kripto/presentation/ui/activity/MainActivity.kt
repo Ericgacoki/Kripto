@@ -7,6 +7,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -68,10 +69,12 @@ class MainActivity : ComponentActivity() {
                 )
 
                 val systemUiController = rememberSystemUiController()
+                val statusBarColor = MaterialTheme.colorScheme.surface
+                val useDarkIcons = isSystemInDarkTheme()
                 SideEffect {
                     systemUiController.setStatusBarColor(
-                        color = Color.White,
-                        darkIcons = true
+                        color = statusBarColor,
+                        darkIcons = !useDarkIcons
                     )
                 }
 
@@ -96,7 +99,7 @@ class MainActivity : ComponentActivity() {
                             BottomNavigation(
                                 modifier = Modifier.height(72.dp),
                                 elevation = 8.dp,
-                                backgroundColor = MaterialTheme.colorScheme.surface
+                                backgroundColor = MaterialTheme.colorScheme.surfaceVariant
                             ) {
                                 val navBackEntry by navController.currentBackStackEntryAsState()
                                 val currentDestination = navBackEntry?.destination
@@ -124,6 +127,7 @@ class MainActivity : ComponentActivity() {
                                                     ) {
                                                         Icon(
                                                             modifier = Modifier,
+                                                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
                                                             painter = painterResource(id = item.icon),
                                                             contentDescription = "Nav icon"
                                                         )
