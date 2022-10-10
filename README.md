@@ -1,5 +1,8 @@
-# Kripto
-Yet another crypto currency app 😅
+| | |
+| --- | --- |
+| <img src="https://user-images.githubusercontent.com/54077752/194863563-21350860-b896-4dde-b242-d4db32809f33.png" width="200" /> | <img src="https://user-images.githubusercontent.com/54077752/194861774-b69d1fa5-c4e4-49cc-be08-b6ebde1cfc65.svg" width="200" /> |
+
+#### Yet another crypto currency app 😅
 ## Crypto Coins  •  Tokens  •  Exchanges  •   Conversion
 
 ### Built with
