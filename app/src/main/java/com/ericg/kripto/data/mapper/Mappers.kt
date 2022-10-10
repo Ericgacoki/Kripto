@@ -80,7 +80,7 @@ internal fun ExchangeDto.toExchange(): Exchange {
         name = name,
         quotes = quotesDto?.toQuotes(),
         reportedRank = reportedRank,
-        sessionsPerMonth = sessionsPerMonth,
+        sessionsPerMonth = sessionsPerMonth?.toInt(),
         websiteStatus = websiteStatus
     )
 }

@@ -27,7 +27,7 @@ data class ExchangeDto(
     @SerializedName("reported_rank")
     val reportedRank: Int?,
     @SerializedName("sessions_per_month")
-    val sessionsPerMonth: Int?,
+    val sessionsPerMonth: Long? ,
     @SerializedName("website_status")
     val websiteStatus: Boolean?
 )
