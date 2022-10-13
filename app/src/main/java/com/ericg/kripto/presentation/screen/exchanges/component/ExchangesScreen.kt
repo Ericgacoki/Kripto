@@ -5,19 +5,18 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Scaffold
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ericg.kripto.R
 import com.ericg.kripto.presentation.screen.exchanges.event.ExchangesUiEvent
 import com.ericg.kripto.presentation.screen.exchanges.viewmodel.ExchangesViewModel
-import com.ericg.kripto.presentation.theme.ColorPrimary
 import com.ericg.kripto.presentation.ui.sharedComposables.AppTopBar
 import com.ericg.kripto.presentation.ui.sharedComposables.NoMatchFound
 import com.ericg.kripto.presentation.ui.sharedComposables.RetryButton
@@ -25,20 +24,17 @@ import com.ericg.kripto.util.GifImageLoader
 import com.ericg.kripto.util.ext.isScrollingUp
 import com.ramcosta.composedestinations.annotation.Destination
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
 fun ExchangesScreen(
     exchangesViewModel: ExchangesViewModel = hiltViewModel()
 ) {
-    val scaffoldState = rememberScaffoldState()
     val lazyColumnState = rememberLazyListState()
     val exchangesState = exchangesViewModel.state.collectAsState()
 
     Scaffold(
-        modifier = Modifier
-            .background(Color.White)
-            .fillMaxSize(),
-        scaffoldState = scaffoldState,
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             AppTopBar(
                 title = "Exchanges",
@@ -50,8 +46,6 @@ fun ExchangesScreen(
             )
         }
     ) {
-        val iDoNotNeedThisPaddingValues = it
-
         if (exchangesState.value.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 GifImageLoader(
@@ -60,19 +54,23 @@ fun ExchangesScreen(
                 )
             }
         } else if (exchangesState.value.exchanges.isNotEmpty()) {
-
-            LazyColumn(modifier = Modifier.fillMaxSize(), state = lazyColumnState) {
+            LazyColumn(
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxSize(), state = lazyColumnState
+            ) {
                 itemsIndexed(exchangesState.value.exchanges) { index, exchange ->
                     ExchangeItem(exchange)
+
                     if (index != exchangesState.value.exchanges.lastIndex) {
                         Spacer(
                             modifier = Modifier
                                 .height((.5).dp)
                                 .fillMaxWidth()
-                                .background(color = ColorPrimary.copy(alpha = 0.32F))
+                                .background(color = colorScheme.onSurface.copy(alpha = 0.32F))
                         )
                     } else {
-                        Spacer(modifier = Modifier.height(80.dp))
+                        Spacer(modifier = Modifier.height(150.dp))
                     }
                 }
             }
