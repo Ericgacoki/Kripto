@@ -15,17 +15,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.rememberScaffoldState
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +38,7 @@ import com.ericg.kripto.presentation.screen.destinations.CoinLIstScreenDestinati
 import com.ericg.kripto.presentation.screen.destinations.ExchangesScreenDestination
 import com.ericg.kripto.presentation.screen.destinations.PriceConversionScreenDestination
 import com.ericg.kripto.presentation.theme.KriptoTheme
+import com.ericg.kripto.presentation.theme.poppinsFontFamily
 import com.ericg.kripto.presentation.ui.sharedComposables.BottomNavItem
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
@@ -69,13 +73,18 @@ class MainActivity : ComponentActivity() {
                 )
 
                 val systemUiController = rememberSystemUiController()
-                val statusBarColor = MaterialTheme.colorScheme.surface
-                val useDarkIcons = isSystemInDarkTheme()
+                val statusBarColor = colorScheme.surface
+                val useDarkIcons = isSystemInDarkTheme().not()
                 SideEffect {
                     systemUiController.setStatusBarColor(
                         color = statusBarColor,
-                        darkIcons = !useDarkIcons
+                        darkIcons = useDarkIcons
                     )
+                    /*systemUiController.setNavigationBarColor(
+                        color = statusBarColor,
+                        darkIcons = useDarkIcons,
+                        navigationBarContrastEnforced = true
+                    )*/
                 }
 
                 val newBackStackEntry by navController.currentBackStackEntryAsState()
@@ -98,8 +107,8 @@ class MainActivity : ComponentActivity() {
                         if (showBottomBar) {
                             BottomNavigation(
                                 modifier = Modifier.height(72.dp),
-                                elevation = 8.dp,
-                                backgroundColor = MaterialTheme.colorScheme.surfaceVariant
+                                elevation = 0.dp,
+                                backgroundColor = colorScheme.surface
                             ) {
                                 val navBackEntry by navController.currentBackStackEntryAsState()
                                 val currentDestination = navBackEntry?.destination
@@ -118,7 +127,11 @@ class MainActivity : ComponentActivity() {
                                                         modifier = Modifier
                                                             .padding(vertical = 4.dp)
                                                             .clip(RoundedCornerShape(100))
-                                                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                                                            .background(
+                                                                colorScheme.onSurface.copy(
+                                                                    alpha = .12F
+                                                                )
+                                                            )
                                                             .padding(
                                                                 horizontal = 20.dp,
                                                                 vertical = 6.dp
@@ -127,7 +140,7 @@ class MainActivity : ComponentActivity() {
                                                     ) {
                                                         Icon(
                                                             modifier = Modifier,
-                                                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                                                            tint = colorScheme.onSurface,
                                                             painter = painterResource(id = item.icon),
                                                             contentDescription = "Nav icon"
                                                         )
@@ -135,7 +148,8 @@ class MainActivity : ComponentActivity() {
                                                 } else {
                                                     Icon(
                                                         painter = painterResource(id = item.icon),
-                                                        contentDescription = "Icon"
+                                                        contentDescription = "Icon",
+                                                        tint = colorScheme.onSurface.copy(alpha = .75F)
                                                     )
                                                 }
                                             }
@@ -144,13 +158,17 @@ class MainActivity : ComponentActivity() {
                                             Text(
                                                 text = item.title,
                                                 modifier = Modifier.padding(top = 2.dp),
-                                                fontSize = 12.sp,
-                                                fontWeight = FontWeight.Medium
+                                                style = TextStyle(
+                                                    fontWeight = FontWeight.Normal,
+                                                    fontFamily = poppinsFontFamily,
+                                                    fontSize = 11.sp,
+                                                    lineHeight = 16.sp,
+                                                    letterSpacing = 0.5.sp
+                                                )
                                             )
                                         },
                                         alwaysShowLabel = false,
-                                        selectedContentColor = MaterialTheme.colorScheme.primary,
-                                        unselectedContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        selectedContentColor = colorScheme.onSurface,
                                         selected = currentDestination?.route?.contains(item.destination.route) == true,
                                         onClick = {
                                             navController.navigate(item.destination.route) {
