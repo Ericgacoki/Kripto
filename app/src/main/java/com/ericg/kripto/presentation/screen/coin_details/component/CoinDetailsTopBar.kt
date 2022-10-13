@@ -17,7 +17,7 @@ import com.ericg.kripto.presentation.theme.ColorBadgeBg
 import com.ericg.kripto.presentation.theme.ColorBadgeText
 import com.ericg.kripto.presentation.theme.ColorPrimary
 import com.ericg.kripto.presentation.ui.sharedComposables.CoinTypeBadge
-import com.ericg.kripto.presentation.ui.sharedComposables.IsNewCoinBadge
+import com.ericg.kripto.presentation.ui.sharedComposables.NewCoinBadge
 
 @Composable
 fun CoinDetailsTopBar(
@@ -58,7 +58,7 @@ fun CoinDetailsTopBar(
                             )
                         }
                     }
-                    item { IsNewCoinBadge(isNew = isNew) }
+                    item { NewCoinBadge(isNew = isNew) }
                     item { CoinTypeBadge(type = type) }
                 })
         }
