@@ -6,12 +6,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,9 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ericg.kripto.presentation.ui.sharedComposables.CoinTypeBadge
-import com.ericg.kripto.presentation.ui.sharedComposables.IsNewCoinBadge
+import com.ericg.kripto.presentation.ui.sharedComposables.NewCoinBadge
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CoinItem(
     name: String,
@@ -37,11 +34,10 @@ fun CoinItem(
     type: String,
     onClick: () -> Unit,
 ) {
-    Surface(
+    Box(
         modifier = Modifier.background(
-            if (isActive) Color.Unspecified else colorScheme.primary.copy(
-                .24F
-            )
+            if (isActive) Color.Transparent else
+                colorScheme.tertiary.copy(.12F)
         )
     ) {
         Row(
@@ -70,7 +66,7 @@ fun CoinItem(
                             textAlign = TextAlign.Start,
                             style = typography.titleMedium
                         )
-                        IsNewCoinBadge(isNew) // FIXME: Colors
+                        NewCoinBadge(isNew)
                         CoinTypeBadge(type = type)
                     }
 
@@ -78,7 +74,7 @@ fun CoinItem(
                         text = symbol,
                         fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.Start,
-                        color = Color.Unspecified.copy(alpha = .56F),
+                        color = colorScheme.onSurface.copy(alpha = .56F),
                         fontSize = 12.sp,
                         style = typography.titleSmall
                     )
@@ -88,12 +84,11 @@ fun CoinItem(
             if (!isActive) Text(
                 modifier = Modifier.padding(end = 12.dp),
                 text = "Dormant",
-                color = Color.Unspecified.copy(alpha = .56F),
-                style = typography.labelMedium
+                color = colorScheme.primary,
+                style = typography.bodySmall
             )
         }
     }
-
 }
 
 @Composable
@@ -103,7 +98,7 @@ private fun RankBadge(rank: Int, name: String) {
             modifier = Modifier
                 .size(45.dp)
                 .clip(CircleShape)
-                .background(colorScheme.primary.copy(alpha = 0.24F)),
+                .background(colorScheme.onSurface.copy(alpha = 0.08F)),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -117,15 +112,14 @@ private fun RankBadge(rank: Int, name: String) {
         Box(
             modifier = Modifier
                 .padding(start = 32.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(colorScheme.primary),
+                .clip(RoundedCornerShape(100))
+                .background(colorScheme.surface),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 modifier = Modifier.padding(start = 6.dp, end = 6.dp, top = 1.dp),
                 text = rank.toString(),
                 fontWeight = FontWeight.Light,
-                color = colorScheme.onPrimary,
                 style = typography.labelMedium
             )
         }
