@@ -38,7 +38,7 @@ fun NewCoinBadge(isNew: Boolean) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CoinTypeBadge(type: String) {
+fun CurrencyTypeBadge(type: String) {
     Card(
         modifier = Modifier
             .padding(start = 12.dp),

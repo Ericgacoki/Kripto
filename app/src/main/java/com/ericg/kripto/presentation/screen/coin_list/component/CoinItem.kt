@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ericg.kripto.presentation.ui.sharedComposables.CoinTypeBadge
+import com.ericg.kripto.presentation.ui.sharedComposables.CurrencyTypeBadge
 import com.ericg.kripto.presentation.ui.sharedComposables.NewCoinBadge
 
 @Composable
@@ -67,7 +67,7 @@ fun CoinItem(
                             style = typography.titleMedium
                         )
                         NewCoinBadge(isNew)
-                        CoinTypeBadge(type = type)
+                        CurrencyTypeBadge(type = type)
                     }
 
                     Text(
