@@ -72,6 +72,8 @@ fun LottieLoader(
     )
 }
 
+// TODO: Add transparent bg loaders
+
 @Composable
 fun GifImageLoader(
     modifier: Modifier = Modifier,

@@ -2,8 +2,9 @@ package com.ericg.kripto.presentation.screen.coin_details.component
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,7 +14,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ericg.kripto.R
-import com.ericg.kripto.presentation.theme.ColorPrimary
 
 @Composable
 fun TeamMemberItem(name: String, position: String) {
@@ -23,7 +23,7 @@ fun TeamMemberItem(name: String, position: String) {
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_person_icon),
-            tint = ColorPrimary.copy(alpha = 0.56F),
+            tint = colorScheme.tertiary.copy(alpha = 0.99F),
             modifier = Modifier
                 .size(48.dp)
                 .clip(shape = CircleShape),
@@ -39,13 +39,12 @@ fun TeamMemberItem(name: String, position: String) {
         ) {
 
             Text(
-                color = ColorPrimary,
                 text = name,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal
             )
             Text(
-                color = ColorPrimary.copy(alpha = 0.56F),
+                color = colorScheme.onSurface.copy(alpha = 0.56F),
                 text = position,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal

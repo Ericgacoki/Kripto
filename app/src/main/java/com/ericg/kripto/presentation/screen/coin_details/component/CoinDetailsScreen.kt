@@ -9,7 +9,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,10 +32,6 @@ import com.ericg.kripto.domain.model.Tag
 import com.ericg.kripto.domain.model.TeamMember
 import com.ericg.kripto.presentation.screen.coin_details.state.BottomSheetContentState
 import com.ericg.kripto.presentation.screen.coin_details.viewmodel.CoinDetailsViewModel
-import com.ericg.kripto.presentation.theme.ColorBadgeText
-import com.ericg.kripto.presentation.theme.ColorLinkDark
-import com.ericg.kripto.presentation.theme.ColorOrangeDark
-import com.ericg.kripto.presentation.theme.ColorPrimary
 import com.ericg.kripto.presentation.ui.sharedComposables.LinkItem
 import com.ericg.kripto.presentation.ui.sharedComposables.RetryButton
 import com.ericg.kripto.util.GifImageLoader
@@ -37,7 +40,10 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalFoundationApi::class, ExperimentalMaterialApi::class,
+    ExperimentalMaterial3Api::class
+)
 @Destination
 @Composable
 fun CoinDetailsScreen(
@@ -52,7 +58,6 @@ fun CoinDetailsScreen(
 ) {
     var bottomSheetContentState by remember { mutableStateOf(BottomSheetContentState()) }
     val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
     val uriHandler = LocalUriHandler.current
@@ -66,7 +71,7 @@ fun CoinDetailsScreen(
 
     ModalBottomSheetLayout(
         modifier = Modifier
-            .background(Color.White)
+            .background(colorScheme.surface)
             .fillMaxSize()
             .clip(shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)),
         sheetState = modalBottomSheetState,
@@ -83,7 +88,6 @@ fun CoinDetailsScreen(
         ) {
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
-                scaffoldState = scaffoldState,
                 topBar = {
                     CoinDetailsTopBar(
                         name = name,
@@ -93,8 +97,7 @@ fun CoinDetailsScreen(
                         isNew = isNew
                     )
                 }
-            ) { pdValues ->
-                val pd = pdValues // ignore padding values
+            ) { paddingValues ->
 
                 val coinDetailsState = coinDetailsViewModel.state.collectAsState()
 
@@ -111,11 +114,13 @@ fun CoinDetailsScreen(
                     }
                 } else if (coinDetailsState.value.coinDetails?.id.isNullOrEmpty().not()) {
                     LazyColumn(
-                        modifier = Modifier.padding(
-                            start = 12.dp,
-                            end = 12.dp,
-                            bottom = 12.dp
-                        )
+                        modifier = Modifier
+                            .padding(
+                                start = 12.dp,
+                                end = 12.dp,
+                                bottom = 12.dp
+                            )
+                            .padding(paddingValues)
                     ) {
                         item {
                             coinDetailsState.value.coinDetails?.description.let { desc ->
@@ -125,7 +130,7 @@ fun CoinDetailsScreen(
                                         .fillMaxWidth()
                                         .padding(bottom = 6.dp),
                                     fontSize = 14.sp,
-                                    color = ColorPrimary.copy(alpha = .74F),
+                                    color = colorScheme.onSurface.copy(alpha = .74F),
                                     fontWeight = FontWeight.Normal
                                 )
                             }
@@ -138,8 +143,7 @@ fun CoinDetailsScreen(
                                     modifier = Modifier
                                         .padding(bottom = 4.dp)
                                         .fillMaxWidth()
-                                        .background(Color.White),
-                                    color = ColorPrimary,
+                                        .background(colorScheme.surface),
                                     text = "Tags",
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.SemiBold
@@ -148,14 +152,6 @@ fun CoinDetailsScreen(
 
                         if (tags.isNotEmpty())
                             item {
-                                val colors =
-                                    listOf<Color>(
-                                        ColorPrimary,
-                                        ColorLinkDark,
-                                        ColorOrangeDark,
-                                        ColorBadgeText
-                                    )
-
                                 FlowRow(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -164,7 +160,7 @@ fun CoinDetailsScreen(
                                     crossAxisSpacing = 8.dp
                                 ) {
                                     tags.sortedBy { it.name.length }.forEach {
-                                        TagItem(name = it.name, colors = colors)
+                                        TagItem(name = it.name)
                                     }
                                 }
                             }
@@ -189,8 +185,7 @@ fun CoinDetailsScreen(
                                     modifier = Modifier
                                         .padding(bottom = 4.dp)
                                         .fillMaxWidth()
-                                        .background(Color.White),
-                                    color = ColorPrimary,
+                                        .background(colorScheme.surface),
                                     text = "Links",
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.SemiBold
@@ -225,8 +220,7 @@ fun CoinDetailsScreen(
                                     modifier = Modifier
                                         .padding(bottom = 4.dp)
                                         .fillMaxWidth()
-                                        .background(Color.White),
-                                    color = ColorPrimary,
+                                        .background(colorScheme.surface),
                                     text = "Team",
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.SemiBold

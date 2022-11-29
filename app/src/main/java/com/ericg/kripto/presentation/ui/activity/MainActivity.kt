@@ -7,21 +7,28 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,8 +37,8 @@ import com.ericg.kripto.presentation.screen.NavGraphs
 import com.ericg.kripto.presentation.screen.destinations.CoinLIstScreenDestination
 import com.ericg.kripto.presentation.screen.destinations.ExchangesScreenDestination
 import com.ericg.kripto.presentation.screen.destinations.PriceConversionScreenDestination
-import com.ericg.kripto.presentation.theme.ColorPrimary
 import com.ericg.kripto.presentation.theme.KriptoTheme
+import com.ericg.kripto.presentation.theme.poppinsFontFamily
 import com.ericg.kripto.presentation.ui.sharedComposables.BottomNavItem
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
@@ -43,7 +50,10 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class)
+    @OptIn(
+        ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class,
+        ExperimentalMaterial3Api::class
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -63,16 +73,22 @@ class MainActivity : ComponentActivity() {
                 )
 
                 val systemUiController = rememberSystemUiController()
+                val statusBarColor = colorScheme.surface
+                val useDarkIcons = isSystemInDarkTheme().not()
                 SideEffect {
                     systemUiController.setStatusBarColor(
-                        color = Color.White,
-                        darkIcons = true
+                        color = statusBarColor,
+                        darkIcons = useDarkIcons
                     )
+                    /*systemUiController.setNavigationBarColor(
+                        color = statusBarColor,
+                        darkIcons = useDarkIcons,
+                        navigationBarContrastEnforced = true
+                    )*/
                 }
 
                 val newBackStackEntry by navController.currentBackStackEntryAsState()
                 val route = newBackStackEntry?.destination?.route
-                val scaffoldState = rememberScaffoldState()
 
                 val bottomBarItems: List<BottomNavItem> = listOf(
                     BottomNavItem.CoinList,
@@ -87,13 +103,12 @@ class MainActivity : ComponentActivity() {
                 )
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    scaffoldState = scaffoldState,
                     bottomBar = {
                         if (showBottomBar) {
                             BottomNavigation(
                                 modifier = Modifier.height(72.dp),
-                                elevation = 8.dp,
-                                backgroundColor = White
+                                elevation = 0.dp,
+                                backgroundColor = colorScheme.surface
                             ) {
                                 val navBackEntry by navController.currentBackStackEntryAsState()
                                 val currentDestination = navBackEntry?.destination
@@ -112,7 +127,11 @@ class MainActivity : ComponentActivity() {
                                                         modifier = Modifier
                                                             .padding(vertical = 4.dp)
                                                             .clip(RoundedCornerShape(100))
-                                                            .background(ColorPrimary.copy(alpha = .12F))
+                                                            .background(
+                                                                colorScheme.onSurface.copy(
+                                                                    alpha = .12F
+                                                                )
+                                                            )
                                                             .padding(
                                                                 horizontal = 20.dp,
                                                                 vertical = 6.dp
@@ -121,16 +140,16 @@ class MainActivity : ComponentActivity() {
                                                     ) {
                                                         Icon(
                                                             modifier = Modifier,
+                                                            tint = colorScheme.onSurface,
                                                             painter = painterResource(id = item.icon),
-                                                            tint = ColorPrimary,
                                                             contentDescription = "Nav icon"
                                                         )
                                                     }
                                                 } else {
                                                     Icon(
                                                         painter = painterResource(id = item.icon),
-                                                        tint = ColorPrimary,
-                                                        contentDescription = "Icon"
+                                                        contentDescription = "Icon",
+                                                        tint = colorScheme.onSurface.copy(alpha = .75F)
                                                     )
                                                 }
                                             }
@@ -139,14 +158,17 @@ class MainActivity : ComponentActivity() {
                                             Text(
                                                 text = item.title,
                                                 modifier = Modifier.padding(top = 2.dp),
-                                                color = ColorPrimary,
-                                                fontSize = 12.sp,
-                                                fontWeight = FontWeight.Medium
+                                                style = TextStyle(
+                                                    fontWeight = FontWeight.Normal,
+                                                    fontFamily = poppinsFontFamily,
+                                                    fontSize = 11.sp,
+                                                    lineHeight = 16.sp,
+                                                    letterSpacing = 0.5.sp
+                                                )
                                             )
                                         },
                                         alwaysShowLabel = false,
-                                        selectedContentColor = ColorPrimary,
-                                        unselectedContentColor = ColorPrimary.copy(alpha = .24F),
+                                        selectedContentColor = colorScheme.onSurface,
                                         selected = currentDestination?.route?.contains(item.destination.route) == true,
                                         onClick = {
                                             navController.navigate(item.destination.route) {
