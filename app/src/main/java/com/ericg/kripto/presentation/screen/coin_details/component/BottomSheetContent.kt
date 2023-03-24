@@ -7,8 +7,9 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -19,8 +20,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ericg.kripto.presentation.screen.coin_details.state.BottomSheetContentState
-import com.ericg.kripto.presentation.theme.ColorLinkDark
-import com.ericg.kripto.presentation.theme.ColorPrimary
 
 @Composable
 fun BottomSheetContent(
@@ -32,7 +31,7 @@ fun BottomSheetContent(
             Modifier
                 .fillMaxWidth()
                 .height(250.dp)
-                .background(Color.White)
+                .background(colorScheme.surfaceVariant)
                 .padding(top = 24.dp, start = 24.dp, end = 24.dp),
             horizontalAlignment = Alignment.Start
         ) {
@@ -43,7 +42,7 @@ fun BottomSheetContent(
                         modifier = Modifier
                             .indication(
                                 interactionSource = interaction,
-                                indication = rememberRipple(color = ColorLinkDark)
+                                indication = rememberRipple(color = colorScheme.onSurfaceVariant)
                             )
                             .clickable(
                                 interactionSource = interaction,
@@ -57,21 +56,21 @@ fun BottomSheetContent(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         fontSize = 14.sp,
-                        color = ColorLinkDark
+                        // color = ColorLinkDark
                     )
                     if (index != bottomSheetContentState.links.lastIndex) {
                         Spacer(
                             modifier = Modifier
                                 .height((.5).dp)
                                 .fillMaxWidth(1F)
-                                .background(color = ColorPrimary.copy(alpha = 0.24F))
+                                .background(color = colorScheme.onSurfaceVariant.copy(alpha = 0.24F))
                         )
                     } else {
                         Spacer(
                             modifier = Modifier
                                 .height((24).dp)
                                 .fillMaxWidth(1F)
-                                .background(color = Color.White)
+                                .background(color = Color.Transparent)
                         )
                     }
                 }
@@ -87,8 +86,8 @@ fun BottomSheetContent(
                 modifier = Modifier
                     .width(36.dp)
                     .height(4.dp)
-                    .clip(RoundedCornerShape(4.dp))
-                    .background(Color.Gray.copy(alpha = .56F))
+                    .clip(RoundedCornerShape(100))
+                    .background(colorScheme.onSurfaceVariant.copy(alpha = .56F))
                     .padding(12.dp)
             )
         }

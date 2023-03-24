@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,11 +15,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ericg.kripto.presentation.theme.ColorBadgeBg
-import com.ericg.kripto.presentation.theme.ColorBadgeText
-import com.ericg.kripto.presentation.theme.ColorPrimary
-import com.ericg.kripto.presentation.ui.sharedComposables.CoinTypeBadge
-import com.ericg.kripto.presentation.ui.sharedComposables.IsNewCoinBadge
+import com.ericg.kripto.presentation.ui.sharedComposables.CurrencyTypeBadge
+import com.ericg.kripto.presentation.ui.sharedComposables.NewCoinBadge
 
 @Composable
 fun CoinDetailsTopBar(
@@ -36,9 +35,7 @@ fun CoinDetailsTopBar(
         ) {
             Text(
                 text = trimText(name, 16),
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
-                color = ColorPrimary
+                style = MaterialTheme.typography.headlineMedium
             )
 
             LazyRow(modifier = Modifier.fillMaxWidth(),
@@ -47,19 +44,19 @@ fun CoinDetailsTopBar(
                         Box(
                             modifier = Modifier
                                 .padding(start = 12.dp)
-                                .clip(RoundedCornerShape(2.dp))
-                                .background(ColorBadgeBg)
+                                .clip(RoundedCornerShape(16))
+                                .background(colorScheme.tertiaryContainer)
                         ) {
                             Text(
                                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                                 text = rank.toString(),
-                                color = ColorBadgeText,
-                                fontSize = 10.sp
+                                fontSize = 10.sp,
+                                color = colorScheme.onTertiaryContainer
                             )
                         }
                     }
-                    item { IsNewCoinBadge(isNew = isNew) }
-                    item { CoinTypeBadge(type = type) }
+                    item { NewCoinBadge(isNew = isNew) }
+                    item { CurrencyTypeBadge(type = type) }
                 })
         }
 
@@ -67,7 +64,7 @@ fun CoinDetailsTopBar(
             text = symbol,
             fontWeight = FontWeight.Normal,
             textAlign = TextAlign.Start,
-            color = ColorPrimary.copy(alpha = .56F),
+            color = colorScheme.onSurface.copy(alpha = .56F),
             fontSize = 14.sp
         )
     }
@@ -76,7 +73,10 @@ fun CoinDetailsTopBar(
 internal fun trimText(text: String, maxLength: Int): String {
     return when (text.length) {
         in 0..maxLength -> text
-        in maxLength..Int.MAX_VALUE -> text.substring(startIndex = 0, endIndex = maxLength - 1) + "..."
+        in maxLength..Int.MAX_VALUE -> text.substring(
+            startIndex = 0,
+            endIndex = maxLength - 1
+        ) + "..."
         else -> text
     }
 }

@@ -5,19 +5,19 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Scaffold
-import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ericg.kripto.R
 import com.ericg.kripto.presentation.screen.coin_list.event.CoinListUiEvent
 import com.ericg.kripto.presentation.screen.coin_list.viewmodel.CoinListViewModel
 import com.ericg.kripto.presentation.screen.destinations.CoinDetailsScreenDestination
-import com.ericg.kripto.presentation.theme.ColorPrimary
 import com.ericg.kripto.presentation.ui.sharedComposables.AppTopBar
 import com.ericg.kripto.presentation.ui.sharedComposables.NoMatchFound
 import com.ericg.kripto.presentation.ui.sharedComposables.RetryButton
@@ -26,6 +26,7 @@ import com.ericg.kripto.util.ext.isScrollingUp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
 fun CoinLIstScreen(
@@ -35,13 +36,10 @@ fun CoinLIstScreen(
 
     val coinListState = coinListViewModel.state.collectAsState()
     val lazyColumnState = rememberLazyListState()
-    val scaffoldState = rememberScaffoldState()
 
     Scaffold(
         modifier = Modifier
-            .background(Color.White)
             .fillMaxSize(),
-        scaffoldState = scaffoldState,
         topBar = {
             AppTopBar(
                 title = "Coins",
@@ -53,8 +51,6 @@ fun CoinLIstScreen(
             )
         }
     ) {
-        val unUsedPadding = it
-
         if (coinListState.value.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 GifImageLoader(
@@ -64,7 +60,9 @@ fun CoinLIstScreen(
             }
         } else if (coinListState.value.coins.isNotEmpty()) {
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxSize(),
                 state = lazyColumnState,
             ) {
                 itemsIndexed(coinListState.value.coins) { index, coin ->
@@ -93,10 +91,14 @@ fun CoinLIstScreen(
                                 .padding(start = 52.dp)
                                 .height((.5).dp)
                                 .fillMaxWidth(1F)
-                                .background(color = ColorPrimary.copy(alpha = 0.24F))
+                                .background(
+                                    color = colorScheme.onSurface.copy(
+                                        alpha = 0.24F
+                                    )
+                                )
                         )
                     } else {
-                        Spacer(modifier = Modifier.height(80.dp))
+                        Spacer(modifier = Modifier.height(150.dp))
                     }
                 }
             }

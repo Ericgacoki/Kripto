@@ -10,30 +10,29 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ericg.kripto.domain.model.Exchange
-import com.ericg.kripto.presentation.theme.ColorBadgeBg
-import com.ericg.kripto.presentation.theme.ColorBadgeText
-import com.ericg.kripto.presentation.theme.ColorDormantBg
-import com.ericg.kripto.presentation.theme.ColorPrimary
+import com.ericg.kripto.presentation.theme.poppinsFontFamily
 import com.ericg.kripto.presentation.ui.sharedComposables.LinkItem
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ExchangeItem(exchange: Exchange) {
 
@@ -45,7 +44,10 @@ fun ExchangeItem(exchange: Exchange) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = if (exchange.active == true) Color.White else ColorDormantBg)
+            .background(
+                color = if (exchange.active == true) Color.Transparent else
+                    colorScheme.tertiary.copy(alpha = .12F)
+            )
             .padding(16.dp)
     ) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -58,27 +60,22 @@ fun ExchangeItem(exchange: Exchange) {
                         in 0..16 -> exchange.name ?: "Anonymous"
                         else -> exchange.name?.substring(0..15) + "..."
                     },
-                    fontSize = 18.sp,
-                    color = ColorPrimary,
-                    fontWeight = FontWeight.SemiBold
+                    style = typography.titleMedium.copy(fontSize = 18.sp)
                 )
 
-                Box(
+                Card(
                     modifier = Modifier
                         .padding(horizontal = 24.dp, vertical = 8.dp)
-                        .clip(shape = RoundedCornerShape(100))
-                        .background(
-                            if (exchange.active == true) ColorBadgeBg else ColorPrimary.copy(
-                                alpha = .32F
-                            )
-                        )
-                        .padding(horizontal = 8.dp, vertical = 2.dp),
-                    contentAlignment = Alignment.Center
+                        .clip(shape = RoundedCornerShape(100)),
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (exchange.active == true) colorScheme.primary
+                        else colorScheme.tertiary.copy(alpha = .32F)
+                    )
                 ) {
                     Text(
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                         text = if (exchange.active == true) "Active" else "Dormant",
-                        fontSize = 12.sp,
-                        color = if (exchange.active == true) ColorBadgeText else Color.White
+                        style = typography.labelMedium
                     )
                 }
             }
@@ -95,9 +92,9 @@ fun ExchangeItem(exchange: Exchange) {
         AnimatedVisibility(visible = expanded) {
             Text(
                 text = exchange.description?.ifEmpty { "No description found!" }
-                    ?: "No description found!",
-                fontSize = 12.sp,
-                color = ColorPrimary.copy(alpha = .74F)
+                    ?: ("No description found!"),
+                style = typography.labelMedium.copy(fontWeight = FontWeight.Normal),
+                color = colorScheme.onSurface.copy(alpha = .5F)
             )
         }
 
@@ -151,7 +148,7 @@ fun ExchangeItem(exchange: Exchange) {
 
 @Composable
 private fun MarketItem(title: String, value: Int) {
-/*    val animatedValue by animateIntAsState(
+    /*  val animatedValue by animateIntAsState(
         targetValue = value,
         animationSpec = tween(
             durationMillis = 1000,
@@ -168,9 +165,14 @@ private fun MarketItem(title: String, value: Int) {
     ) {
         Text(
             text = title,
-            fontSize = 12.sp,
             textAlign = TextAlign.Center,
-            color = ColorPrimary
+            style = TextStyle(
+                fontWeight = FontWeight.Light,
+                fontFamily = poppinsFontFamily,
+                fontSize = 12.sp,
+                lineHeight = 16.sp,
+                letterSpacing = 0.5.sp
+            ),
         )
 
         Box(
@@ -179,10 +181,13 @@ private fun MarketItem(title: String, value: Int) {
                 .fillMaxWidth()
                 .height(54.dp)
                 .clip(shape = RoundedCornerShape(12.dp))
-                .background(color = ColorPrimary.copy(alpha = .04F)),
+                .background(color = colorScheme.onSurface.copy(alpha = .04F)),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = value.toString(), fontSize = 24.sp, color = ColorPrimary)
+            Text(
+                text = value.toString(),
+                style = typography.headlineMedium
+            )
         }
     }
 }

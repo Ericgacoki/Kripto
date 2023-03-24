@@ -7,9 +7,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement.Absolute.SpaceBetween
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
@@ -17,11 +16,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -44,21 +44,18 @@ import com.ericg.kripto.R
 import com.ericg.kripto.presentation.screen.price_conversion.event.ConversionUiEvent
 import com.ericg.kripto.presentation.screen.price_conversion.state.ConversionState
 import com.ericg.kripto.presentation.screen.price_conversion.viewmodel.ConversionViewModel
-import com.ericg.kripto.presentation.theme.ColorLinkDark
-import com.ericg.kripto.presentation.theme.ColorPrimary
 import com.ericg.kripto.presentation.ui.sharedComposables.AppTopBar
 import com.ramcosta.composedestinations.annotation.Destination
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
 fun PriceConversionScreen(
     conversionViewModel: ConversionViewModel = hiltViewModel()
 ) {
     val conversionState = conversionViewModel.conversionState.collectAsState()
-    val scaffoldState = rememberScaffoldState()
 
     Scaffold(
-        scaffoldState = scaffoldState,
         modifier = Modifier
             .background(Color.White)
             .fillMaxSize(),
@@ -69,9 +66,7 @@ fun PriceConversionScreen(
                 initialValue = "",
                 onSearchParamChange = {})
         }
-    ) { padding ->
-        val paddingValues = padding
-
+    ) { paddingValues ->
         val baseCurrencies by remember {
             mutableStateOf(
                 listOf(
@@ -141,6 +136,7 @@ fun PriceConversionScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues)
                 .padding(start = 12.dp, end = 12.dp, top = 54.dp)
         ) {
             var amountInput by remember { mutableStateOf("") }
@@ -164,13 +160,9 @@ fun PriceConversionScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .focusRequester(focusRequester),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = ColorPrimary.copy(alpha = 0.12f)
-                ),
                 textStyle = TextStyle.Default.copy(
                     fontSize = 28.sp,
                     textAlign = TextAlign.Start,
-                    color = ColorPrimary,
                     fontWeight = FontWeight.Medium
                 ),
                 shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
@@ -207,13 +199,11 @@ fun PriceConversionScreen(
                     .fillMaxWidth(),
             ) {
                 item {
-                    Box(
+                    Card(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
                             .fillMaxWidth()
-                            .background(ColorPrimary.copy(alpha = .12F))
                             .padding(8.dp),
-                        contentAlignment = Center,
+                        shape = RoundedCornerShape(8.dp)
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -221,12 +211,12 @@ fun PriceConversionScreen(
                             verticalAlignment = CenterVertically
                         ) {
                             Text(
+                                modifier = Modifier.padding(8.dp),
                                 text = selectedConversionPair.first.name.takeFirst(12),
-                                color = ColorPrimary,
                                 fontWeight = FontWeight.Medium,
+                                maxLines = 1
                             ).also {
                                 DropdownMenu(
-                                    // modifier = Modifier.height(250.dp),
                                     expanded = isBaseCurrencyMenuExpanded,
                                     onDismissRequest = {
                                         isBaseCurrencyMenuExpanded =
@@ -235,35 +225,33 @@ fun PriceConversionScreen(
 
                                     currencies.first.forEachIndexed { index, currency ->
                                         var isChecked: Boolean
-                                        DropdownMenuItem(onClick = {
-                                            selectedConversionPair =
-                                                selectedConversionPair.copy(first = currencies.first[index])
-                                            isBaseCurrencyMenuExpanded = false
-                                            showConversionState = false
-                                        }) {
-                                            isChecked =
-                                                currency.id == selectedConversionPair.first.id
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                verticalAlignment = CenterVertically,
-                                                horizontalArrangement = SpaceBetween
-                                            ) {
+                                        DropdownMenuItem(
+                                            interactionSource = MutableInteractionSource(),
+                                            onClick = {
+                                                selectedConversionPair =
+                                                    selectedConversionPair.copy(first = currencies.first[index])
+                                                isBaseCurrencyMenuExpanded = false
+                                                showConversionState = false
+                                            }, text = {
                                                 Text(
                                                     maxLines = 1,
                                                     text = "(${currency.symbol})  ${currency.name}"
                                                         .takeFirst(22),
-                                                    color = ColorPrimary.copy(alpha = .8F)
+                                                    color = colorScheme.inverseSurface.copy(alpha = .84F)
                                                 )
+                                            },
+                                            trailingIcon = {
+                                                isChecked =
+                                                    currency.id == selectedConversionPair.first.id
 
                                                 if (isChecked)
                                                     Icon(
                                                         modifier = Modifier.padding(start = 12.dp),
                                                         imageVector = Icons.Rounded.CheckCircle,
-                                                        tint = ColorPrimary,
                                                         contentDescription = "Checked"
                                                     )
                                             }
-                                        }
+                                        )
                                     }
                                 }
                             }
@@ -282,13 +270,11 @@ fun PriceConversionScreen(
                 }
 
                 item {
-                    Box(
+                    Card(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
                             .fillMaxWidth()
-                            .background(ColorPrimary.copy(alpha = .12F))
                             .padding(8.dp),
-                        contentAlignment = Center,
+                        shape = RoundedCornerShape(8.dp)
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -296,13 +282,12 @@ fun PriceConversionScreen(
                             verticalAlignment = CenterVertically
                         ) {
                             Text(
+                                modifier = Modifier.padding(8.dp),
                                 text = selectedConversionPair.second.name.takeFirst(12),
-                                color = ColorPrimary,
                                 fontWeight = FontWeight.Medium,
                                 maxLines = 1
                             ).also {
                                 DropdownMenu(
-                                    // modifier = Modifier.height(250.dp),
                                     expanded = isQuoteCurrencyMenuExpanded,
                                     onDismissRequest = {
                                         isQuoteCurrencyMenuExpanded =
@@ -317,30 +302,24 @@ fun PriceConversionScreen(
                                                     selectedConversionPair.copy(second = currencies.second[index])
                                                 isQuoteCurrencyMenuExpanded = false
                                                 showConversionState = false
-                                            }) {
-                                            isChecked =
-                                                currency.id == selectedConversionPair.second.id
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                verticalAlignment = CenterVertically,
-                                                horizontalArrangement = SpaceBetween
-                                            ) {
+                                            }, text = {
                                                 Text(
                                                     maxLines = 1,
                                                     text = "(${currency.symbol})  ${currency.name}"
                                                         .takeFirst(22),
-                                                    color = ColorPrimary.copy(alpha = .8F)
+                                                    color = colorScheme.inverseSurface.copy(alpha = .84F)
                                                 )
-
+                                            }, trailingIcon = {
+                                                isChecked =
+                                                    currency.id == selectedConversionPair.second.id
                                                 if (isChecked)
                                                     Icon(
                                                         modifier = Modifier.padding(start = 12.dp),
                                                         imageVector = Icons.Rounded.CheckCircle,
-                                                        tint = ColorPrimary,
                                                         contentDescription = "Checked"
                                                     )
                                             }
-                                        }
+                                        )
                                     }
                                 }
                             }
@@ -357,7 +336,6 @@ fun PriceConversionScreen(
                         }
                     }
                 }
-
             }
 
             Box(
@@ -366,10 +344,11 @@ fun PriceConversionScreen(
                     .fillMaxWidth(),
                 contentAlignment = Center
             ) {
-                Box(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .background(ColorLinkDark.copy(alpha = .24F))
+                Card(
+                    shape = CircleShape,
+                    colors = CardDefaults.cardColors(
+                        containerColor = colorScheme.tertiary.copy(alpha = .24F)
+                    )
                 ) {
                     IconButton(onClick = {
                         swapCurrenciesAndSelectedPair()
@@ -387,7 +366,6 @@ fun PriceConversionScreen(
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_swap),
-                            tint = ColorLinkDark,
                             contentDescription = null
                         )
                     }
@@ -395,7 +373,7 @@ fun PriceConversionScreen(
             }
 
             val animatedBackgroundColor by animateColorAsState(
-                targetValue = if (!isError && amountInput.isNotEmpty()) ColorPrimary else ColorPrimary.copy(
+                targetValue = if (!isError && amountInput.isNotEmpty()) colorScheme.primary else colorScheme.primary.copy(
                     alpha = .12F
                 ),
                 animationSpec = tween(
@@ -405,30 +383,34 @@ fun PriceConversionScreen(
                 )
             )
 
-            Box(
+            Button(
                 modifier = Modifier
                     .padding(top = 24.dp)
                     .clip(RoundedCornerShape(100))
-                    .background(animatedBackgroundColor)
                     .fillMaxWidth()
-                    .height(48.dp)
-                    .clickable {
-                        focusManager.clearFocus()
-                        if (!isError && amountInput.isNotEmpty()) {
-                            showConversionState = true
+                    .height(48.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = animatedBackgroundColor),
+                onClick = {
+                    focusManager.clearFocus()
+                    if (!isError && amountInput.isNotEmpty()) {
+                        showConversionState = true
 
-                            conversionViewModel.onEvent(
-                                ConversionUiEvent.OnConvert(
-                                    amount = amountInput.toDouble(),
-                                    baseCurrencyId = selectedConversionPair.first.id,
-                                    quoteCurrencyId = selectedConversionPair.second.id
-                                )
+                        conversionViewModel.onEvent(
+                            ConversionUiEvent.OnConvert(
+                                amount = amountInput.toDouble(),
+                                baseCurrencyId = selectedConversionPair.first.id,
+                                quoteCurrencyId = selectedConversionPair.second.id
                             )
-                        } else showConversionState = false
-                    },
-                contentAlignment = Center
+                        )
+                    } else showConversionState = false
+                }
             ) {
-                Text(text = buttonText, color = Color.White, fontWeight = FontWeight.Medium)
+                Text(
+                    text = buttonText,
+                    color = if (!isError && amountInput.isNotEmpty()) colorScheme.onPrimary else
+                        colorScheme.onSurface.copy(alpha = .84F),
+                    fontWeight = FontWeight.Medium
+                )
             }
 
             LaunchedEffect(key1 = amountInput) {
@@ -457,8 +439,7 @@ fun PriceConversionScreen(
                             text = (conversionState.value as ConversionState.Error).message,
                             fontSize = 18.sp,
                             textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Normal,
-                            color = ColorPrimary
+                            fontWeight = FontWeight.Normal
                         )
                     }
                     is ConversionState.Success -> {
@@ -475,7 +456,7 @@ fun PriceConversionScreen(
                                     text = "${selectedConversionPair.second.symbol}   ",
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Medium,
-                                    color = ColorPrimary.copy(alpha = .61F)
+                                    color = colorScheme.onSurface.copy(alpha = .61F)
                                 )
                                 SelectionContainer {
                                     val price =
@@ -492,7 +473,7 @@ fun PriceConversionScreen(
                                         text = text,
                                         fontSize = 36.sp,
                                         fontWeight = FontWeight.Medium,
-                                        color = ColorPrimary
+                                        color = colorScheme.onSurface
                                     )
                                 }
                             }
